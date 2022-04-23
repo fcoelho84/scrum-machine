@@ -3,7 +3,7 @@ import './index.css';
 const RoomPanel = () => {
 
     const onSubmit = () => {
-        const roomId = 'teste' ;
+        const roomId = Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
         window.location.href += `?room=${roomId}`
     }
 

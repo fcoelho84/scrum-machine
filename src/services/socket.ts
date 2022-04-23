@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 
 class Socket {
-    private socket = io('http://127.0.0.1:8080');
+    private socket = io('http://15.228.157.57:8080');
 
     public emit(key: string, value: any) {
         this.socket.emit(key, value)

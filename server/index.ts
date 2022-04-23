@@ -7,7 +7,7 @@ import path from 'path';
 
 
 const app = express();
-app.listen(8081, '127.0.0.1')
+app.listen(8081)
 app.use(express.static('build'));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 
 const server = http.createServer(express);
-server.listen(8080, '127.0.0.1');
+server.listen(8080);
 const ioServer = new io.Server(server, {
     cors: {
         origin: '*',

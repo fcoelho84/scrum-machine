@@ -121,7 +121,7 @@ ioServer.on('connection', (socket) => {
             return null;
         }
         getRoomUsers(_roomId)
-        .then(users => users.filter(user => user.id === socket.id))
+        .then(users => users.filter(user => user.id !== socket.id))
         .then(users => {
             if(users.length === 0) {
                 return deleteRoom(_roomId);

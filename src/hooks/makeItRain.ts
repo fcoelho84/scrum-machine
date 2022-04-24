@@ -1,4 +1,5 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
+import { random } from "utils";
 
 interface Params {
     quantity: number,
@@ -24,10 +25,6 @@ interface Config extends Params {
 }
 
 export const useMakeItRain = (params: Partial<Params> = {}) => {
-    
-    const random = useCallback((max: number, min: number) => {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }, [])
   
     const generateMoney = useCallback((config: Config) => {
         const fallingMoney: Money[] = [];
@@ -68,7 +65,7 @@ export const useMakeItRain = (params: Partial<Params> = {}) => {
         config.canvas.remove();
       }, config.duration);
     
-    }, [random])
+    }, [])
 
     const prepare = useCallback(() => {
         const canvas = document.createElement('canvas')

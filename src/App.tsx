@@ -1,9 +1,11 @@
 
 import './App.css'
-import JoinRoom from './joinRoom';
-import Room from './room';
+import CreateRoom from 'Components/CreateRoom';
+import VottingRoom from 'Components/VottingRoom';
 import { useEffect, useState } from 'react';
-import socket from './services/socket';
+import socket from 'services/socket';
+
+
 function App() {
   const [roomId, setRoomId] = useState<string>('');
 
@@ -23,8 +25,8 @@ function App() {
   return (
     <div className='main'>
       <div className='main scale'>
-        {!hasRoom && <JoinRoom />}
-        {hasRoom && <Room/>}
+        {!hasRoom && <CreateRoom />}
+        {hasRoom && <VottingRoom/>}
       </div>  
     </div>
   );

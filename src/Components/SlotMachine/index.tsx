@@ -1,12 +1,12 @@
 import { PropsWithChildren } from 'react';
-import Socket from '../services/socket';
+import Socket from 'services/socket';
 import './index.css'
 
 function Machine(props: PropsWithChildren<any>) {
   const values  = ['🤷‍♂️', '0', '0.5', '1', '3', '5', '8', '13', '21', '∞'];
 
   const onClick = (value: string) => () => {
-      Socket.emit('sendValue', value)
+    Socket.emit('sendValue', value)
   }
 
   const spin = () => {
@@ -14,7 +14,7 @@ function Machine(props: PropsWithChildren<any>) {
   }
 
   const reset = () => {
-      Socket.emit('slot-animate', false)
+    Socket.emit('slot-animate', false)
   }
 
   return (

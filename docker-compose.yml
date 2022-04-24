@@ -17,17 +17,14 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.14.1
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms1024m -Xmx1024m
     ports:
       - "9201:9200"
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 0.5G
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.5.2
-    ports:
-      - 5601:5601
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.5.2
+  #   ports:
+  #     - 5601:5601

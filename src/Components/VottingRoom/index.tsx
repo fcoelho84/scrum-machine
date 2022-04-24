@@ -22,6 +22,7 @@ function Room() {
   }
 
   useEffect(() => {
+    console.log(animationStatus)
     if(animationStatus !== enStatus.IDLE) return;
     const countDifferentResults = new Set();
     slotKeys.forEach(key => {
@@ -34,7 +35,7 @@ function Room() {
 
   return (
     <div className='room'>
-      <Machine>
+      <Machine disabled={animationStatus !== enStatus.STOPPED}>
         {slotKeys.map(renderSlot)}
       </Machine>
     </div>  

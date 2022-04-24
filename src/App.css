@@ -1,35 +1,15 @@
-
-
 .main {
     position: relative;
     background-color: black;
     min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-
-
-@media (max-width: 1440px) {
-    .scale {
-        transform: scale(0.8);
-    }
-}
-
-@media (max-width: 1024px) {
-    .scale {
-        transform: scale(0.7);
-    }
-}
-
-@media (max-width: 768px) {
-    .scale {
-        transform: scale(0.5);
-    }
-}
-
-
 .rain {
     z-index: 100;
     position: fixed;

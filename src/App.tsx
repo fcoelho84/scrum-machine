@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div className='main'>
-      <div className='main scale'>
+      <div className='main'>
         {!hasRoom && <CreateRoom />}
         {hasRoom && <VottingRoom/>}
       </div>  

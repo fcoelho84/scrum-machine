@@ -3,40 +3,38 @@ import Machine from 'Components/SlotMachine';
 import Slot from 'Components/Slot';
 import { useEffect } from 'react';
 import { useMakeItRain } from 'hooks/makeItRain';
-import { useSlotValues } from 'hooks/slotValues';
+import { SlotData, useSlotValues } from 'hooks/slotValues';
 import { enStatus, useAnimationProgress } from 'hooks/animationProgress';
 
 
 function Room() {
-  const [slotValues, slotKeys] = useSlotValues();
-  const animationStatus = useAnimationProgress(slotKeys.length);
+  const [slotValues] = useSlotValues();
+  const animationStatus = useAnimationProgress(slotValues.length);
   const startRaining = useMakeItRain();
 
-  const renderSlot = (id: string, position: number) => {
+  const renderSlot = (slot: SlotData, position: number) => {
+    const data = slotValues.find(value => value.id === slot.id) ?? { value: 'A' }
     const config = {
-      id, 
+      id: slot.id, 
       position,
-      value: slotValues[id]
+      value: data.value
     }
-    return <Slot key={id} {...config}/>
+    return <Slot key={config.id} {...config}/>
   }
 
   useEffect(() => {
-    console.log(animationStatus)
     if(animationStatus !== enStatus.IDLE) return;
     const countDifferentResults = new Set();
-    slotKeys.forEach(key => {
-      countDifferentResults.add(slotValues[key]);
-    });
-    if(countDifferentResults.size === 1 && slotKeys.length > 1) {
+    slotValues.forEach(({value}) => countDifferentResults.add(value));
+    if(countDifferentResults.size === 1 && slotValues.length > 1) {
       startRaining();
     }
-  }, [animationStatus, slotValues, slotKeys, startRaining])
+  }, [animationStatus, slotValues, startRaining])
 
   return (
     <div className='room'>
       <Machine disabled={animationStatus !== enStatus.STOPPED}>
-        {slotKeys.map(renderSlot)}
+        {slotValues.map(renderSlot)}
       </Machine>
     </div>  
   );

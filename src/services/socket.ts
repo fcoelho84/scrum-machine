@@ -1,7 +1,8 @@
+import { HOST, SOCKET_PORT } from 'settings';
 import io from 'socket.io-client';
 
 class Socket {
-    private socket = io('http://15.228.157.57:8080');
+    private socket = io(`${HOST}:${SOCKET_PORT}`);
 
     public emit(key: string, value: any) {
         this.socket.emit(key, value)

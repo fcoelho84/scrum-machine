@@ -1,11 +1,14 @@
-import { random } from 'utils';
 import './index.css';
+import { HOST } from 'settings';
+import { API_PORT } from '../../settings';
 
 const RoomPanel = () => {
 
     const onSubmit = () => {
-        const roomId = random(99999, 10000);
-        window.location.href += `?room=${roomId}`
+        fetch(`${HOST}:${API_PORT}/api/room`, {method: 'post'})
+        .then(response => response.json())
+        .then((response) => window.location.href += `?room=${response.id}`)
+        .catch(error => console.error(error))
     }
 
     return (

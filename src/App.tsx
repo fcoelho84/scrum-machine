@@ -15,12 +15,11 @@ function App() {
       const roomId = String(params.get('room'));
      socket.emit('join', { roomId });
      setRoomId(roomId)
-    } 
-    socket.receive('error', (message: string) => console.log(message));
+    }
   }, [])
 
 
-  const hasRoom = roomId.length > 0 && roomId.length <= 5; 
+  const hasRoom = roomId.length > 0; 
 
   return (
     <div className='main'>

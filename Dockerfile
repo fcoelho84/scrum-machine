@@ -16,4 +16,4 @@ EXPOSE 8080
 
 EXPOSE 8081
 
-CMD node server/index.ts
+CMD nodemon server/index.ts

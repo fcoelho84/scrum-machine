@@ -10,6 +10,9 @@ function App() {
   const [roomId, setRoomId] = useState<string>('');
 
   useEffect(() => {
+
+    socket.receive('error', (message: string) => window.alert(message))
+
     const params = new URL(window.location.href).searchParams;
     if(params.get('room')) {
       const roomId = String(params.get('room'));

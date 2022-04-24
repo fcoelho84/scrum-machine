@@ -10,7 +10,11 @@ interface User {
 }
 
 const elasticClient = new elastic.Client({
-    node: `http://localhost:9201`
+    node: `https://my-deployment-1a31fa.es.us-central1.gcp.cloud.es.io:9243/`,
+    auth: {
+        username: 'elastic',
+        password: 'ykeiqYNYZY2oKYhRYfxrwO8i'
+    }
 });
 
 
@@ -56,11 +60,11 @@ app.post('/api/room', (req, res) => {
     .catch(error => res.send(String(error)))
 });
 
-app.get('/api/room/:roomId', (req, res) => {
-    getRoomUsers(req.params.roomId)
-    .then(users => res.json({ users }))
-    .catch(error => res.send(String(error)))
-});
+// app.get('/api/room/:roomId', (req, res) => {
+//     getRoomUsers(req.params.roomId)
+//     .then(users => res.json({ users }))
+//     .catch(error => res.send(String(error)))
+// });
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -78,11 +82,18 @@ const ioServer = new io.Server(server, {
 ioServer.on('connection', (socket) => {
     let _roomId = '';
     socket.on('join', function({roomId}) {
-        _roomId = roomId;
-        socket.join(roomId);
+        getRoomUsers(roomId)
+        .then(users => {
+            _roomId = roomId;
+            socket.join(roomId);
+            socket.emit('history', users)
+        })
     });
 
     socket.on('sendValue', (value: string) => {
+        if(!_roomId) {
+            return null;
+        }
         getRoomUsers(_roomId)
         .then(users => {
             const user = users.find(user => user.id === socket.id);
@@ -106,6 +117,9 @@ ioServer.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {  
+        if(!_roomId) {
+            return null;
+        }
         getRoomUsers(_roomId)
         .then(users => users.filter(user => user.id === socket.id))
         .then(users => {

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useMakeItRain } from 'hooks/makeItRain';
 import { SlotData, useSlotValues } from 'hooks/slotValues';
 import { enStatus, useAnimationProgress } from 'hooks/animationProgress';
+import Lamp from 'Components/Lamp';
 
 
 function Room() {
@@ -33,7 +34,8 @@ function Room() {
 
   return (
     <div className='room'>
-      <Machine disabled={animationStatus !== enStatus.STOPPED}>
+      <Lamp slotValues={slotValues}/>
+      <Machine>
         {slotValues.map(renderSlot)}
       </Machine>
     </div>  

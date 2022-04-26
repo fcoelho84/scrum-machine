@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { API_PORT, HOST } from "settings";
+import { useEffect, useState } from "react"
 import socket from "../services/socket"
 export interface SlotData {
     id: string;

@@ -26,7 +26,18 @@
     border-left-color: #ff9100;
     border-right-color: #ff9100;
     margin-right: 16px;
+    
 }
+
+.slot-viewport::before {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: linear-gradient(164deg, rgba(210,210,210, 0.2) 45%, rgba(200,200,200, 0.1) 55%);
+}
+
 
 .slot-viewport:last-of-type {
     margin-right: 0px;
@@ -50,6 +61,7 @@
 }
 
 .slot{
+    box-shadow: inset 0px 0px 50px black;
     position: relative;
     width: 100%;
     height: 100%;
@@ -68,9 +80,13 @@
 .slot > span {
     width: 100%;
     text-align: center;
-    font-size: 5rem;
-    color: #3F5E5A;
-    font-family: 'Festive', cursive;
+    font-size: 2rem;
+    font-family: 'Orelega One', cursive;
+    color: white;
+    text-shadow: 1px 1px 0 black, 
+                2px 2px 0 black,
+                3px 3px 0 black,
+                4px 4px 0 black;
 }
 
 @media (max-width: 1440px) {

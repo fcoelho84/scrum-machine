@@ -5,12 +5,15 @@ import { useState } from 'react';
 import { enStatus, useAnimationProgress } from 'hooks/animationProgress';
 import { useEffect } from 'react';
 
-function Machine(props: PropsWithChildren<{disabled: boolean}>) {
+function Machine(props: PropsWithChildren<any>) {
   const [isActive, setIsActive] = useState(false);
   const animationStatus = useAnimationProgress();
-  const values  = ['🤷‍♂️', '0', '0.5', '1', '3', '5', '8', '13', '21', '∞'];
+  const values  = ['🤷‍♂️', '0', '0.5', '1', '3', '5', '8', '13', '20', '1 mês + teste'];
 
   const onClick = (value: string) => () => {
+    if(value.length >  2) {
+      value = '∞'
+    }
     Socket.emit('sendValue', value)
   }
 
@@ -45,16 +48,14 @@ function Machine(props: PropsWithChildren<{disabled: boolean}>) {
             {props.children}
           </div>
         </div>
-      </div>
-      <div className='machine-case-table'> 
-        <div>
+      </div> 
+        <div className='machine-button-area'>
           {values.map(value => (
-              <div data-disabled={props.disabled} className="machine-case-table-button" onClick={onClick(value)}>
+              <div data-disabled={isActive} className="machine-button" onClick={onClick(value)}>
                   <span>{value}</span>
               </div>
           ))}
         </div>
-      </div>
     </>
   );
 }

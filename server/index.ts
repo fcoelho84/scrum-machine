@@ -8,6 +8,11 @@ interface User {
     id: string;
     value: string;
 }
+interface UserSession {
+    roomId: string;
+    name: string;
+    lampColor: string;
+}
 
 const elasticClient = new elastic.Client({
     node: `https://my-deployment-1a31fa.es.us-central1.gcp.cloud.es.io:9243/`,
@@ -80,24 +85,35 @@ const ioServer = new io.Server(server, {
 });
 
 ioServer.on('connection', (socket) => {
-    let _roomId = '';
-    socket.on('join', function({roomId}) {
-        getRoomUsers(roomId)
+    const session: any = {};
+    socket.on('join', function(data: UserSession) {
+        getRoomUsers(data.roomId)
         .then(users => {
-            _roomId = roomId;
-            socket.join(roomId);
             socket.emit('history', users)
+        }).catch((error) => {
+            console.error(error);
+            socket.emit('invalid-room', true)
+        }).finally(() => {
+            session.roomId = data.roomId;
+            session.name = data.name;
+            session.lampColor = data.lampColor;
+            socket.join(data.roomId);
         })
     });
 
     socket.on('sendValue', (value: string) => {
-        if(!_roomId) {
+        if(!session.roomId) {
             return null;
         }
-        getRoomUsers(_roomId)
+        const data = { 
+            value, 
+            id: socket.id, 
+            name: session.name, 
+            lampColor: session.lampColor
+        };
+        getRoomUsers(session.roomId)
         .then(users => {
             const user = users.find(user => user.id === socket.id);
-            const data = { id: socket.id,  value }
             if(user) {
                 return users.map(user => {
                     if(user.id === socket.id) {
@@ -108,27 +124,28 @@ ioServer.on('connection', (socket) => {
             }
             return [...users, data];
         })
-        .then(users => updateRoom(_roomId, users))
-        .then(() => ioServer.to(_roomId).emit('receiveValue', {value, id: socket.id}));
+        .then(users => updateRoom(session.roomId, users));
+        ioServer.to(session.roomId).emit('receiveValue', data);
     })
 
     socket.on('slot-animate', function(startAnimation: boolean) {
-        ioServer.to(_roomId).emit('slot-animate', startAnimation);
+        ioServer.to(session.roomId).emit('slot-animate', startAnimation);
     });
 
     socket.on('disconnect', () => {  
-        if(!_roomId) {
+        if(!session.roomId) {
             return null;
         }
-        getRoomUsers(_roomId)
+        getRoomUsers(session.roomId)
         .then(users => users.filter(user => user.id !== socket.id))
         .then(users => {
+            if(!session.roomId) return;
             if(users.length === 0) {
-                return deleteRoom(_roomId);
+                return deleteRoom(session.roomId);
             }
-            return updateRoom(_roomId, users);
-        })
-        .then(() => ioServer.to(_roomId).emit('disconnected', socket.id));
+            return updateRoom(session.roomId, users);
+        });
+        ioServer.to(session.roomId).emit('disconnected', socket.id)
     });
 });
   

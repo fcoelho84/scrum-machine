@@ -1,9 +1,14 @@
 
+.machine-lever[data-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .machine-lever {
     position: absolute;
     top: 30vh;
     width: 10%;
-    right: 1.7vw;
+    right: 0.9vw;
     display: flex;
     flex-direction: column;
     padding: 16px;
@@ -50,8 +55,7 @@
 	display: block;
 	outline: 0;
 	position: relative;
-	width: 12em;
-	height: 12em;
+	height: 150px;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;

@@ -10,7 +10,7 @@ import Lamp from 'Components/Lamp';
 
 function Room() {
   const [slotValues] = useSlotValues();
-  const animationStatus = useAnimationProgress(slotValues.length);
+  const animationStatus = useAnimationProgress();
   const startRaining = useMakeItRain();
 
   const renderSlot = (slot: SlotData, position: number) => {
@@ -27,7 +27,7 @@ function Room() {
     if(animationStatus !== enStatus.IDLE) return;
     const countDifferentResults = new Set();
     slotValues.forEach(({value}) => countDifferentResults.add(value));
-    if(countDifferentResults.size === 1 && slotValues.length > 1) {
+    if(countDifferentResults.size === 1 && slotValues.length > 1 && !countDifferentResults.has('?')) {
       startRaining();
     }
   }, [animationStatus, slotValues, startRaining])

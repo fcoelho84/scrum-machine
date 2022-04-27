@@ -24,7 +24,15 @@ const Lamp = (props: {slotValues: SlotData[]}) => {
 
     return (
         <div className="lamp-area">
-            {values.map((data) => <div data-active={data.value !== '?'}className="lamp"/>)}
+            {values.map((data) =>
+                <div 
+                    data-active={data.value !== '?' ? data.lampColor : ''}
+                    className="lamp"> 
+                    <div className="lamp-name">
+                        <span>{data.name}</span>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "../services/socket";
+import roomService from 'services/room';
 
 export enum enStatus {
   RUNNING = 2,
@@ -7,19 +8,21 @@ export enum enStatus {
   STOPPED = 0
 }
 
-export const useAnimationProgress = (slotCount: number | null = null) => {
+export const useAnimationProgress = (disableIdle: boolean = false) => {
     const [status, setStatus] = useState(enStatus.STOPPED);
 
     useEffect(() => {
-      socket.receive('slot-animate', (isRuning: boolean) => {
-        setStatus(isRuning ? enStatus.RUNNING : enStatus.STOPPED);
-        if(!isRuning || slotCount === null) return; 
+      socket.receive('slot-animate', (isRunning: boolean) => {
+        console.log('isRunning', isRunning)
+        setStatus(isRunning ? enStatus.RUNNING : enStatus.STOPPED);
+        const slotCount  = roomService.getUsers().length;
+        if(!isRunning || disableIdle) return; 
         const timeout = setTimeout(() => {
           setStatus(enStatus.IDLE);
           clearTimeout(timeout);
         }, (3000 + (slotCount - 1) * 200))
       });
-    }, [slotCount])
+    }, [])
 
     return status;
 }

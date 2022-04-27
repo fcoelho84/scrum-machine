@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react"
 import socket from "../services/socket"
+import roomService from 'services/room';
 export interface SlotData {
     id: string;
     value: string;
+    name: string;
+    lampColor: string;
 }
 
 type Slot = SlotData[];
 
-
 export const useSlotValues = (): [Slot, React.Dispatch<Slot>] => {
     const [values, setValues] = useState<Slot>([]);
+
+    useEffect(() =>{
+        roomService.setUsers(values)
+    }, [values])
   
     useEffect(() => {
         socket.receive('history', (users: Slot) => setValues(users))

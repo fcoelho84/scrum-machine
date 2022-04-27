@@ -4,8 +4,9 @@
     min-height: 100vh;
     width: 100%;
     box-sizing: border-box;
-    padding: 16px;
+    padding: 0xp 16px;
     display: flex;
+    box-sizing: border-box;
     flex-direction: column;
     align-items: center;
     justify-content: center;

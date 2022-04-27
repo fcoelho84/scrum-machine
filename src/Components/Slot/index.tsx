@@ -7,7 +7,7 @@ interface props {
 }
 
 function Slot({ position, value }: props) {
-  const status = useAnimationProgress();
+  const status = useAnimationProgress(true);
   const values  = ['🤷‍♂️', '0', '🐰', '0.5', '🐢', '1', '🐳', '3', '⭐️', '5', '🌈', '8', '🍟', '13', '🍩','21','💎', '∞', '🚽'];
 
   const renderSlotValue = (value: string) => (
@@ -15,6 +15,7 @@ function Slot({ position, value }: props) {
       <span>{value}</span>
     </div>
   )
+  
   const isSpinning = status === enStatus.RUNNING;
   return (
     <div className="slot-viewport">

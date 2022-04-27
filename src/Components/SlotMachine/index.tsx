@@ -31,6 +31,14 @@ function Machine(props: PropsWithChildren<any>) {
     setIsActive(active => !active);
   }
 
+  useEffect(() => {
+
+    if(animationStatus === enStatus.STOPPED) {
+      setIsActive(false);
+    }
+
+  }, [animationStatus])
+
   return (
     <>
       <div data-disabled={animationStatus === enStatus.RUNNING} className='machine-lever'>

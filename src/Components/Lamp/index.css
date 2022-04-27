@@ -13,6 +13,7 @@
     gap: 80px;
     justify-content: flex-start;
     margin-left: 10vw;
+    z-index: 99;
 }
 
 .lamp {
@@ -31,7 +32,7 @@
 
 .lamp-name {
     position: absolute;
-    left: -16px;
+    left: -18px;
     width: 70px;
     bottom: -55px;
     height: 47px;
@@ -49,9 +50,9 @@
     overflow: hidden; 
     text-overflow: ellipsis;
     overflow: hidden;
-    text-align: left;
+    text-align: center;
     word-break: break-all;
-    font-size: 14px;
+    font-size: 16px;
     font-family: 'Orelega One', cursive;
     color: white;
     text-shadow: 1px 1px 0 black, 

@@ -3,7 +3,7 @@
 
 @keyframes spin {
     0% {
-        transform: translateY(-1700%);
+        transform: translateY(-1600%);
     }
     100% {
         transform: translateY(0%);

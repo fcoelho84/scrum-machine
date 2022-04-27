@@ -37,20 +37,24 @@ function Machine(props: PropsWithChildren<any>) {
       setIsActive(false);
     }
 
+    if(animationStatus === enStatus.RUNNING) {
+      setIsActive(true);
+    }
+
   }, [animationStatus])
 
   return (
     <>
-      <div data-disabled={animationStatus === enStatus.RUNNING} className='machine-lever'>
-        <span>Reiniciar</span>
-        <input type="checkbox" checked={isActive} onChange={swtich} name="lever" className="lever" id="lever" value="lever value" role="switch" aria-label="lever" />
-        <span>Rodar</span>
-      </div>
       <div className='machine-case-screen'>
         <div>
           <div className='machine-screen'>
             {props.children}
           </div>
+        </div>
+        <div data-disabled={animationStatus === enStatus.RUNNING} className='machine-lever'>
+          <span>Reiniciar</span>
+          <input type="checkbox" checked={isActive} onChange={swtich} name="lever" className="lever" id="lever" value="lever value" role="switch" aria-label="lever" />
+          <span>Rodar</span>
         </div>
       </div> 
         <div className='machine-button-area'>

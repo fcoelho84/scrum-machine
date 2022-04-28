@@ -1,38 +1,30 @@
 import "./index.css"
 import { enStatus, useAnimationProgress } from 'hooks/animationProgress';
 import { useEffect } from 'react';
-import { SlotData } from "hooks/slotValues";
 import { useState } from 'react';
 
-const Lamp = (props: {slotValues: SlotData[]}) => {
-    const [values, setValues] = useState<SlotData[]>([]);
+const Lamp = (props: {value: string, name: string, lampColor: string}) => {
+    const [value, setValue] = useState<string>(props.value);
     const animationStatus = useAnimationProgress();
 
     useEffect(() => {
         if(animationStatus === enStatus.STOPPED) {
-            setValues(currentValues => currentValues.map(slot => {
-                slot.value = '?';
-                return slot;
-            }))
+            setValue('?');
         }
 
     }, [animationStatus])
 
     useEffect(() => {
-        setValues(props.slotValues);
-    }, [props.slotValues])
+        setValue(props.value);
+    }, [props.value])
 
     return (
-        <div className="lamp-area">
-            {values.map((data) =>
-                <div 
-                    data-active={data.value !== '?' ? data.lampColor : ''}
-                    className="lamp"> 
-                    <div className="lamp-name">
-                        <span>{data.name}</span>
-                    </div>
-                </div>
-            )}
+        <div 
+            data-active={value !== '?' ? props.lampColor : ''}
+            className="lamp"> 
+            <div className="lamp-name">
+                <span>{props.name}</span>
+            </div>
         </div>
     )
 }

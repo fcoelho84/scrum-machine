@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 function Machine(props: PropsWithChildren<any>) {
   const animationStatus = useAnimationProgress();
   const [isActive, setIsActive] = useState(false);
-  const values  = ['🤷‍♂️', '0', '0.5', '1', '3', '5', '8', '13', '20', '1 mês + teste', '🔗'];
+  const values  = ['🤷‍♂️', '0', '0.5', '1', '2', '3', '5', '8', '13', '20', '1 mês + teste', '🔗'];
 
   const onClick = (value: string) => () => {
     if(value === '🔗') {
@@ -51,13 +51,15 @@ function Machine(props: PropsWithChildren<any>) {
             {props.children}
           </div>
         </div>
-        <div data-disabled={animationStatus === enStatus.RUNNING} className='machine-lever'>
-          <span>Reiniciar</span>
-          <input type="checkbox" checked={isActive} onChange={swtich} name="lever" className="lever" id="lever" value="lever value" role="switch" aria-label="lever" />
-          <span>Rodar</span>
-        </div>
       </div> 
         <div className='machine-button-area'>
+          <div 
+            data-disabled={animationStatus === enStatus.RUNNING} 
+            className="machine-button" 
+            onClick={swtich}
+          >
+              <span>{!isActive ? 'Rodar' : 'Reiniciar'}</span>
+          </div>
           {values.map(value => (
               <div 
                 data-disabled={isActive} 

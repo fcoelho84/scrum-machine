@@ -16,7 +16,7 @@ function Room() {
   const renderSlot = (slot: SlotData, position: number) => {
     const data = slotValues.find(value => value.id === slot.id) ?? { value: 'A' }
     const config = {
-      id: slot.id, 
+      ...slot,
       position,
       value: data.value
     }
@@ -26,15 +26,21 @@ function Room() {
   useEffect(() => {
     if(animationStatus !== enStatus.IDLE) return;
     const countDifferentResults = new Set();
-    slotValues.forEach(({value}) => countDifferentResults.add(value));
-    if(countDifferentResults.size === 1 && slotValues.length > 1 && !countDifferentResults.has('?')) {
+    let count = 0;
+    slotValues.forEach(({value}) => {
+      if(value === '?') {
+        count = count + 1;
+      }
+      countDifferentResults.add(value)
+    });
+    console.log(countDifferentResults.size, slotValues.length)
+    if(countDifferentResults.size <= 3 && slotValues.length > 1) {
       startRaining();
     }
   }, [animationStatus, slotValues, startRaining])
 
   return (
     <div className='room'>
-      <Lamp slotValues={slotValues}/>
       <Machine>
         {slotValues.map(renderSlot)}
       </Machine>

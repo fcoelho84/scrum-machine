@@ -1,43 +1,41 @@
 import { useEffect, useState } from "react"
 import socket from "../services/socket"
 import roomService from 'services/room';
-export interface SlotData {
-    id: string;
-    value: string;
-    name: string;
-    lampColor: string;
-}
+import { SlotUser, SocketKeys } from 'interfaces';
 
-type Slot = SlotData[];
-
-export const useSlotValues = (): [Slot, React.Dispatch<Slot>] => {
-    const [values, setValues] = useState<Slot>([]);
+export const useSlots = (): [SlotUser[], React.Dispatch<SlotUser[]>] => {
+    const [slots, setSlots] = useState<SlotUser[]>([]);
 
     useEffect(() =>{
-        roomService.setUsers(values)
-    }, [values])
+        roomService.setUsers(slots)
+    }, [slots])
   
     useEffect(() => {
-        socket.receive('history', (users: Slot) => setValues(users))
-
-        socket.receive('receiveValue', (data: SlotData) => {
-            setValues((currentValues: Slot) => {
-                const user = currentValues.find(user => user.id === data.id);
+        socket.receive(SocketKeys.resetRoomVotes, () => {
+            setSlots(slots => slots.map(slot => {
+                slot.voted = false;
+                return slot;
+            }))
+        })
+        socket.receive<SlotUser[]>(SocketKeys.roomHistory, setSlots)
+        socket.receive<SlotUser>(SocketKeys.receiveVote, (updatedSlot) => {
+            setSlots((slots) => {
+                const user = slots.find(slot => slot.id === updatedSlot.id);
                 if(user) {
-                    return currentValues.map(user => {
-                        if(user.id === data.id) {
-                            return data
+                    return slots.map(user => {
+                        if(user.id === updatedSlot.id) {
+                            return updatedSlot
                         }
                         return user;
                     })
                 }
-                return [...currentValues, data];
+                return [...slots, updatedSlot];
             })
         })
-        socket.receive('disconnected', (id: SlotData['id']) => {
-            setValues((currentValues: Slot) => currentValues.filter(value => value.id !== id))
+        socket.receive<string>(SocketKeys.slotDisconnected, (id) => {
+            setSlots((slots) => slots.filter(slot => slot.id !== id))
         })
     }, [])
 
-    return [values, setValues];
+    return [slots, setSlots];
 }

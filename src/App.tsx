@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import socket from 'services/socket';
 import roomService from 'services/room';
 import { map, tap } from 'rxjs';
+import { SocketKeys } from 'interfaces';
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
   useEffect(() => {
     const stream$ = roomService.observeUser()
     .pipe(
-      tap(user => socket.emit('join', user)),
+      tap(user => socket.emit(SocketKeys.joinRoom, user)),
       map(user => user.roomId)
     )
     .subscribe(setRoomId);
@@ -24,23 +25,12 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    socket.receive('invalid-room', () => {
-    })
-    
-    socket.receive('error', (message: string) => window.alert(message))
-  }, [])
-
-
   const hasRoom = roomId.length > 0; 
-  
   return (
     <div className='main'>
-      <div className='main'>
-        {!hasRoom && <CreateRoom />}
-        {hasRoom && <VottingRoom/>}
-      </div>  
-    </div>
+      {!hasRoom && <CreateRoom />}
+      {hasRoom && <VottingRoom/>}
+    </div>  
   );
 }
 

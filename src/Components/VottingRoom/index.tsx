@@ -1,48 +1,43 @@
 import './index.css'
-import Machine from 'Components/SlotMachine';
 import Slot from 'Components/Slot';
 import { useEffect } from 'react';
 import { useMakeItRain } from 'hooks/makeItRain';
-import { SlotData, useSlotValues } from 'hooks/slotValues';
-import { enStatus, useAnimationProgress } from 'hooks/animationProgress';
+import { useSlots } from 'hooks/slotValues';
+import Buttons from 'Components/Buttons';
+import Lever from 'Components/Lever';
+import { SlotUser } from 'interfaces';
+import { useSlotStatus } from 'hooks/slotStatus';
 
 
 function Room() {
-  const [slotValues] = useSlotValues();
-  const animationStatus = useAnimationProgress();
+  const [slotValues] = useSlots();
+  const slotStatus = useSlotStatus();
   const startRaining = useMakeItRain();
 
-  const renderSlot = (slot: SlotData, position: number) => {
-    const data = slotValues.find(value => value.id === slot.id) ?? { value: 'A' }
-    const config = {
-      ...slot,
-      position,
-      value: data.value
-    }
-    return <Slot key={config.id} {...config}/>
+  const renderSlot = (slot: SlotUser, index: number) => {
+    return <Slot key={index} index={index} {...slot}/>
   }
 
   useEffect(() => {
-    if(animationStatus !== enStatus.IDLE) return;
+    if(slotStatus.isRunning || slotStatus.isStopped) return;
     const countDifferentResults = new Set();
-    let count = 0;
-    slotValues.forEach(({value}) => {
-      if(value === '?') {
-        count = count + 1;
+    slotValues.forEach(({value, voted}) => {
+      if(voted) {
+        countDifferentResults.add(value)
       }
-      countDifferentResults.add(value)
     });
-    console.log(countDifferentResults.size, slotValues.length)
-    if(countDifferentResults.size <= 3 && slotValues.length > 1) {
+    if(countDifferentResults.size === 1 && slotValues.length > 1 && !countDifferentResults.has('?')) {
       startRaining();
     }
-  }, [animationStatus, slotValues, startRaining])
+  }, [slotStatus, slotValues, startRaining])
 
   return (
     <div className='room'>
-      <Machine>
+      <div className='room-slot-list' >
         {slotValues.map(renderSlot)}
-      </Machine>
+        <Lever />
+      </div>
+      <Buttons />
     </div>  
   );
 }

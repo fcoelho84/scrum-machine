@@ -1,22 +1,10 @@
 import { Subject } from "rxjs";
-
-interface User {
-    roomId: string;
-    name: string;
-    lampColor: string;
-}
-
-interface Slot {
-    id: string;
-    value: string;
-    name: string;
-    lampColor: string;
-}
+import { User } from '../interfaces/index';
 
 class Room {
     private user$ = new Subject<User>();
     private roomId: string = '';
-    private users: Slot[] = [];
+    private users: User[] = [];
 
     public setUser = (user: User) => {
         this.roomId = user.roomId;
@@ -27,7 +15,7 @@ class Room {
         return this.user$.asObservable();
     }
 
-    public setUsers = (users: Slot[]) => {
+    public setUsers = (users: User[]) => {
         this.users = users;
     }
 

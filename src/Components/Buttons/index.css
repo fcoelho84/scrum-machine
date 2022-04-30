@@ -1,58 +1,29 @@
-.machine-case-screen {
-    display: flex;
-    box-sizing: border-box;
-    gap: 16px;
-    width: 100%;
-}
-
-.machine-case-screen > div:first-child {
-    position: relative;
-    width: 100%;
-    flex-direction: column;
-    height: 300px;
-    box-sizing: border-box;
-    align-items: center;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.machine-screen {
-    gap: 4px;
-    position: relative;
-    background: #161616;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    border-radius: 24px;
-    z-index: 10;
-    display: flex;
-    border: 4px solid #161616;
-}
 
 
-.machine-button-area {
+
+.button-area {
     margin-top: 5vh;
     display: flex;
     gap: 16px;
     flex-wrap: wrap;
 }
 
-.machine-button:active::before{
+.button:active::before{
     height: 8px;
     transform: translateY(-3px);
 }
 
-.machine-button:active {
+.button:active {
     box-shadow: 0px 6px 8px rgba(200,200,200, 0.2);
     transform: translateY(3px);
 }
 
-.machine-button[data-disabled='true'] {
+.button[data-disabled='true'] {
     opacity: 0.3;
     pointer-events: none;
 }
 
-.machine-button {
+.button {
     cursor: pointer;
     width: 140px;
     height: 80px;
@@ -70,7 +41,7 @@
     box-shadow: 0px 8px 8px rgba(200,200,200, 0.4);
 }
 
-.machine-button::before {
+.button::before {
     transition: 300ms;
     content: '';
     position: absolute;
@@ -83,7 +54,7 @@
     background: #9a2020;
 }
 
-.machine-button::after {
+.button::after {
     content: '';
     position: absolute;
     left: -4px;
@@ -97,7 +68,7 @@
     border-radius: 8px;
 }
 
-.machine-button > span {
+.button > span {
     text-align: center;
     font-size: 2rem;
     font-family: 'Orelega One', cursive;
@@ -107,17 +78,3 @@
                 3px 3px 0 black,
                 4px 4px 0 black;
 }
-
-
-@media (max-width: 1024px) {
-    .machine-case-screen,
-    .machine-case-screen > div:first-child {
-        border-width: 1px;
-        padding: 4px;
-        margin: 4px;
-    }
-    .machine-lever > span {
-        font-size: 1rem;
-    }
-}
-

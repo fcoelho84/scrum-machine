@@ -1,0 +1,100 @@
+@keyframes leverOff {
+	from { height: 140px; transform: translate(0, 0); }
+	50% { height: 60px; transform: translate(0, 5em); }
+	to { height: 150px; transform: translate(0, 8em); }
+}
+
+@keyframes leverOff2 {
+	from { transform: translate(0, 0); }
+	50% { transform: translate(0, 5.5em); }
+	to { transform: translate(0, 14em); }
+}
+
+@keyframes leverOn {
+	to { height: 140px; transform: translate(0, 0); }
+	50% { height: 60px; transform: translate(0, 5em); }
+	from { height: 140px; transform: translate(0, 8em); }
+}
+
+@keyframes leverOn2 {
+	to { transform: translate(0, 0); }
+	50% { transform: translate(0, 5.5em); }
+	from { transform: translate(0, 14em); }
+}
+
+.lever {
+    position: relative;
+    margin-top: 70px;
+    border-right: 2px solid #161616;
+    border-radius: 100%;
+    width: 10px;
+    height: 320px;
+    cursor: pointer;
+}
+
+.lever > div:first-child {
+    position: absolute;
+    left: 10px;
+    top: calc(50% - 5px);
+    width: 60px;
+    height: 10px;
+    box-sizing: border-box;
+    background: #161616;
+    border-top-right-radius: 2rem;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    z-index: -1;
+}
+
+.lever > div:first-child::before {
+    content: '';
+    background: #161616;
+    position: absolute;
+    top: -15px;
+    left: 0px;
+    width: 14px;
+    height: 40px;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+}
+
+.lever[data-active="true"]::before {
+    animation: leverOff 0.3s linear forwards;
+}
+.lever[data-active="true"]::after {
+    animation: leverOff2 0.3s linear forwards;
+}
+
+.lever[data-active="false"]::before {
+    animation: leverOn 0.3s linear forwards;
+}
+.lever[data-active="false"]::after {
+    animation: leverOn2 0.3s linear forwards;
+}
+
+.lever::before {
+    content: '';
+    position: absolute;
+    background-color: #333;
+    border-radius: 15em;
+    box-shadow: 0 0 1em #667 inset;
+    top: 32px;
+    left: 30px;
+    width: 60px;
+    height: 140px;
+}
+
+.lever::after {
+    content: '';
+    position: absolute;
+    background:
+		radial-gradient(35% 25% at 50% 25%, rgb(136,136,153) 20%, rgba(136,136,153,0)),
+		radial-gradient(1em 0.75em at 32% 75%, rgb(102,102,102), rgba(102,102,102,0)),
+		radial-gradient(1em 0.75em at 65% 78%, rgb(102,102,102), rgba(102,102,102,0)),
+		radial-gradient(100% 100% at center, rgb(68,68,68) 49.5%, rgba(68,68,68,0) 50%);
+    border-radius: 100%;
+    top: 24px;
+    left: 30px;
+    width: 60px;
+    height: 60px;
+}

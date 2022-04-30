@@ -7,19 +7,22 @@ import Buttons from 'Components/Buttons';
 import Lever from 'Components/Lever';
 import { SlotUser } from 'interfaces';
 import { useSlotStatus } from 'hooks/slotStatus';
+import { useRef } from 'react';
+import roomService from 'services/room';
+import { useCallback } from 'react';
 
 
 function Room() {
   const [slotValues] = useSlots();
   const slotStatus = useSlotStatus();
   const startRaining = useMakeItRain();
+  const debouce = useRef<NodeJS.Timeout>()
 
   const renderSlot = (slot: SlotUser, index: number) => {
     return <Slot key={index} index={index} {...slot}/>
   }
 
-  useEffect(() => {
-    if(slotStatus.isRunning || slotStatus.isStopped) return;
+  const calcReward = useCallback(() => {
     const countDifferentResults = new Set();
     slotValues.forEach(({value, voted}) => {
       if(voted) {
@@ -29,7 +32,18 @@ function Room() {
     if(countDifferentResults.size === 1 && slotValues.length > 1 && !countDifferentResults.has('?')) {
       startRaining();
     }
-  }, [slotStatus, slotValues, startRaining])
+  }, [slotValues, startRaining])
+
+  useEffect(() => {
+    if(slotStatus.isRunning) {
+      if(debouce.current) {
+        clearTimeout(debouce.current)
+      }
+      const slotCount  = roomService.getUsers().length;
+      const spinningDuration = (3000 + (slotCount - 1) * 200);
+      debouce.current = setTimeout(() => calcReward(), spinningDuration)
+    }
+  }, [calcReward, slotStatus.isRunning])
 
   return (
     <div className='room'>

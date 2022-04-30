@@ -22,6 +22,15 @@
 	from { transform: translate(0, 14em); }
 }
 
+@keyframes block {
+    from {
+        pointer-events: none;
+    }
+    to {
+        pointer-events: all;
+    }
+}
+
 .lever {
     position: relative;
     margin-top: 70px;
@@ -56,6 +65,10 @@
     height: 40px;
     border-top-right-radius: 2rem;
     border-bottom-right-radius: 2rem;
+}
+
+.lever[data-active="true"] {
+    animation: block 3s linear forwards;
 }
 
 .lever[data-active="true"]::before {

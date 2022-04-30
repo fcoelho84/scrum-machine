@@ -15,12 +15,15 @@ function Buttons() {
     const vote = value === '1 mês + teste' ? '∞' : value;
     Socket.emit(SocketKeys.voted, vote);
   }
+
+
+  console.log(slotStatus.isStopped);
   
   return (
     <div className='button-area'>
       {values.map(value => (
           <div 
-            data-disabled={slotStatus.isRunning} 
+            data-disabled={!slotStatus.isStopped} 
             className="button" 
             onClick={onClick(value)}
           >

@@ -8,6 +8,11 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 - [Figma Prototype](https://www.figma.com/design/XAjCxXLIids6H88OgreDwG/Scrum-Machine?node-id=0-1&node-type=canvas&t=GoQmLH1qg6ziZAUP-0)
 
 # TODO List
-- Api
+- Prototype Desktop ✔️
+- Prototype Mobile
+- Animations ✔️
+- Room Page ✔️
+- Login Page
+- Socket
 - Deploy
 - Tests

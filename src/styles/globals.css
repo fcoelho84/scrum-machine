@@ -210,7 +210,11 @@
 }
 
 button {
-  @apply text-white w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold transition-all hover:brightness-75 active:brightness-50;
+  @apply w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold text-white transition-all hover:brightness-75 active:brightness-50;
+}
+
+button[data-type='text'] {
+  @apply bg-transparent text-gray;
 }
 
 @layer base {

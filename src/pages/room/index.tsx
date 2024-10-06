@@ -31,8 +31,6 @@ const Room = () => {
       >
         {!spin ? 'Girar' : 'Resetar'}
       </button>
-
-      <button className="z-10 min-w-[150px]">Dinheiro</button>
     </div>
   )
 }

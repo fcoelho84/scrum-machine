@@ -5,7 +5,7 @@ interface JackpotLogo {
   active: boolean
 }
 
-const classNames = ['flicker', 'flicker-fast', 'flicker-slow', '', '']
+const flickerAnimClass = ['flicker', 'flicker-fast', 'flicker-slow', '', '']
 
 const Jackpot = (props: JackpotLogo) => {
   return (
@@ -15,10 +15,7 @@ const Jackpot = (props: JackpotLogo) => {
     >
       {'JACKPOT'.split('').map((letter, index) => (
         <span
-          className={
-            classNames[ramdomNumber(classNames.length)] +
-            ' text-[96px] max-lg:text-[32px]'
-          }
+          className={`text-[96px] max-lg:text-[32px] ${flickerAnimClass[ramdomNumber(flickerAnimClass?.length)]}`}
           key={index}
         >
           {letter}

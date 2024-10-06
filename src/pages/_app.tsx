@@ -3,6 +3,11 @@ import { type AppType } from 'next/app'
 import { api } from '~/utils/api'
 
 import '~/styles/globals.css'
+import { io } from 'socket.io-client'
+
+export const socket = io({
+  path: '/api/socket',
+})
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

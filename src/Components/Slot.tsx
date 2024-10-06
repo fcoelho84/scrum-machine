@@ -22,16 +22,20 @@ const Slot = (props: SlotProps) => {
 
   return (
     <div className="relative top-0 max-h-[208px] max-w-fit overflow-hidden">
-      <img src={'/background.png'} className="absolute aspect-[112/208]" />
+      <img
+        src={'/background.png'}
+        className="absolute aspect-[112/208]"
+        alt="slot background"
+      />
       <div
         id="slot"
         data-spin={props.spin}
         className="z-10 flex h-full w-full flex-col items-center justify-center"
         style={{ animationDelay: (props.index ?? 0) * 200 + 'ms' }}
       >
-        {list.map((item) => (
+        {list.map((item, index) => (
           <div
-            key={item}
+            key={index}
             className="flex h-[208px] items-center justify-center"
           >
             <span className="min-w-[112px] text-center text-[62px] font-semibold text-highlight">

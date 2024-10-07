@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ramdomNumber } from '~/utils/numbers'
 
 interface SlotProps {
   value?: number
@@ -10,14 +11,22 @@ interface SlotProps {
 const Slot = (props: SlotProps) => {
   const list = useMemo(() => {
     if (!props.spin && !props.value) {
-      return ['']
+      return ['🤔']
     }
 
     if (props.value) {
       return ['✔️']
     }
 
-    return [...props.items, props.value ?? '🤔'] ?? []
+    const options: string[] = []
+    const icons = ['🍺', '👌', '🤌', '💀', '🎃', '🦍', '🌟', '🔥', '❤️‍🩹']
+
+    for (const number of props.items) {
+      options.push(icons[ramdomNumber(icons.length)]!)
+      options.push(String(number))
+    }
+
+    return [...options, props.value ?? '🤔']
   }, [props.items, props.spin, props.value])
 
   return (

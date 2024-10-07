@@ -1,7 +1,28 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import { api } from '~/utils/api'
+import { socket } from './_app'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+  const { mutateAsync } = api.room.create.useMutation()
+  const router = useRouter()
+
+  const createRoom = async () => {
+    const room = await mutateAsync({
+      name: 'teste',
+      point: 0,
+      isAdmin: true,
+    })
+    const [user] = room.users
+    if (!user) {
+      console.error('user not found')
+      return
+    }
+    localStorage.setItem('userId', user.id)
+    socket.connect().emit('join', room.id)
+    await router.push(`/room/${room.id}`)
+  }
+
   return (
     <>
       <Head>
@@ -21,7 +42,11 @@ export default function Home() {
             scrum machine
           </h1>
           <button className="w-full max-w-[300px] text-[1rem]">Entrar</button>
-          <button data-type="text" className="max-w-[300px] text-[1rem]">
+          <button
+            data-type="text"
+            className="max-w-[300px] text-[1rem]"
+            onClick={createRoom}
+          >
             Criar sala
           </button>
         </div>

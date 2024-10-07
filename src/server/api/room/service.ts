@@ -1,31 +1,51 @@
-import { type z } from 'zod'
-import { type RoomFindInput, type RoomFindOutput } from './router'
 import { ramdomNumber } from '~/utils/numbers'
+import {
+  createClient,
+  type RedisClientType,
+  type RedisFunctions,
+  type RedisModules,
+  type RedisScripts,
+} from '@redis/client'
+import { v4 as uuid } from 'uuid'
+import { type Room, type FindRoomQuery, type CreateRoomQuery } from './types'
+import { TRPCError } from '@trpc/server'
 
-export type Query = z.infer<typeof RoomFindInput>
+export const find = async (query: FindRoomQuery): Promise<Room> => {
+  const data = await redis((client) => client.get(query.roomId))
 
-export type Output = z.infer<typeof RoomFindOutput>
-
-export const getSlots = (
-  optionsRaw = ['0', '0.5', '1', '2', '3', '5', '8', '13']
-) => {
-  const options: string[] = []
-  const icons = ['🍺', '👌', '🤌', '💀', '🎃', '🦍', '🌟', '🔥', '❤️‍🩹']
-
-  for (const number of optionsRaw) {
-    options.push(icons[ramdomNumber(icons.length)]!)
-    options.push(String(number))
+  if (!data) {
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: 'Room not found.',
+    })
   }
 
-  return {
-    options,
-    optionsRaw,
-  }
+  return JSON.parse(data)
 }
 
-export const find = (query: Query): Output => {
-  return {
-    slot: getSlots(),
-    users: [{ name: 'teste', point: 0, isAdmin: false }],
+export const create = async (user: CreateRoomQuery): Promise<Room> => {
+  const room = {
+    id: uuid(),
+    slot: ['0', '0.5', '1', '2', '3', '5', '8', '13'],
+    users: [{ ...user, id: uuid() }],
   }
+
+  await redis((client) => client.set(room.id, JSON.stringify(room)))
+
+  return room
+}
+
+const redis = async <T = string | null>(
+  fnCallback: (
+    redis: RedisClientType<RedisModules, RedisFunctions, RedisScripts>
+  ) => Promise<T>
+) => {
+  const redis = await createClient()
+    .on('error', (err) => console.log('Redis Client Error', err))
+    .connect()
+
+  const response = await fnCallback(redis)
+  await redis.disconnect()
+
+  return response
 }

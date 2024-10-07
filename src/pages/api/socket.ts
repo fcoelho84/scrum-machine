@@ -21,7 +21,9 @@ const SocketHandler = (
   res.socket.io = new Server({ path: '/api/socket' })
 
   res.socket.io.on('connection', (socket) => {
-    socket.on('join', console.log)
+    socket.on('join', async (roomId: string) => {
+      await socket.join(roomId)
+    })
   })
 
   res.end()

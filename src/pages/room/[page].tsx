@@ -29,7 +29,7 @@ const Room = () => {
       <SlotContainer>
         {(data?.users ?? []).map((key, index) => (
           <Slot
-            items={data?.slot.options ?? []}
+            items={data?.slot ?? []}
             spin={spin}
             index={index}
             key={index}
@@ -38,7 +38,7 @@ const Room = () => {
       </SlotContainer>
 
       <div className="z-10 flex flex-wrap gap-2">
-        {(data?.slot.optionsRaw ?? []).map((item, key) => (
+        {(data?.slot ?? []).map((item, key) => (
           <button className="min-w-[76px]" key={key}>
             {item}
           </button>

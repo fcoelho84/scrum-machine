@@ -1,23 +1,16 @@
 import { z } from 'zod'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-import { find } from './service'
-
-export const RoomFindInput = z.object({ roomId: z.string() })
-
-export const RoomFindOutput = z.object({
-  slot: z.object({
-    options: z.array(z.string()),
-    optionsRaw: z.array(z.string()),
-  }),
-  users: z.array(
-    z.object({ name: z.string(), point: z.number(), isAdmin: z.boolean() })
-  ),
-})
+import { create, find } from './service'
+import { CreateRoomSchema, FindRoomSchema, RoomSchema } from './types'
 
 export default createTRPCRouter({
+  create: publicProcedure
+    .input(CreateRoomSchema)
+    .output(RoomSchema)
+    .mutation(({ input }) => create(input)),
   find: publicProcedure
-    .input(RoomFindInput)
-    .output(RoomFindOutput)
+    .input(FindRoomSchema)
+    .output(RoomSchema)
     .query(({ input }) => find(input)),
 })

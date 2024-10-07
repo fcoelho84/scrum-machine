@@ -1,16 +1,26 @@
-import { type NextApiRequest } from 'next'
+import type { Socket } from 'net'
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { type Server as IOServer } from 'socket.io'
 import { Server } from 'socket.io'
 
-const SocketHandler = (req: NextApiRequest, res: any): void => {
-  if (res.socket.server.io) {
-    res.end()
+interface NextApiResponseWithSocket extends NextApiResponse {
+  socket: Socket & { io?: IOServer | undefined }
+}
+const SocketHandler = (
+  req: NextApiRequest,
+  res: NextApiResponseWithSocket
+): void => {
+  if (res.socket?.io) {
+    res.status(200).json({
+      success: true,
+      message: 'Socket is already running',
+    })
     return
   }
 
-  const io = new Server(res.socket.server, { path: '/api/socket' })
-  res.socket.server.io = io
+  res.socket.io = new Server({ path: '/api/socket' })
 
-  io.on('connection', (socket) => {
+  res.socket.io.on('connection', (socket) => {
     socket.on('join', console.log)
   })
 

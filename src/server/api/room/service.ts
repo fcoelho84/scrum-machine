@@ -1,60 +1,96 @@
-import {
-  createClient,
-  type RedisClientType,
-  type RedisFunctions,
-  type RedisModules,
-  type RedisScripts,
-} from '@redis/client'
-import { v4 as uuid } from 'uuid'
-import { type Room, type CreateRoomParams, type UpdateParams } from './types'
-import { TRPCError } from '@trpc/server'
+import { env } from '~/env'
+import { type Poll } from 'party/types'
+import { v4 } from 'uuid'
+import { type z } from 'zod'
+import { type JoinRoomSchema, type CreateRoomSchema } from './types'
 
-export const find = async (roomId: string): Promise<Room> => {
-  const data = await redis((client) => client.get(roomId))
+export const find = async (roomId: string): Promise<Poll> => {
+  const req = await fetch(`${env.PARTYKIT_URL}/party/${roomId}`, {
+    method: 'GET',
+    next: {
+      revalidate: 0,
+    },
+  })
 
-  if (!data) {
-    throw new TRPCError({
-      code: 'NOT_FOUND',
-      message: 'Room not found.',
-    })
+  if (!req.ok) {
+    throw new Error('Something went wrong.')
   }
 
-  return JSON.parse(data)
+  return req.json()
 }
 
-export const update = async (params: UpdateParams): Promise<Room> => {
+export const join = async (params: z.infer<typeof JoinRoomSchema>) => {
   const room = await find(params.roomId)
 
-  room.users.push({ ...params.user, id: uuid() })
-
-  await redis((client) => client.set(room.id, JSON.stringify(room)))
-
-  return room
-}
-
-export const create = async (user: CreateRoomParams): Promise<Room> => {
-  const room = {
-    id: uuid(),
-    slot: ['0', '0.5', '1', '2', '3', '5', '8', '13'],
-    users: [{ ...user, id: uuid() }],
+  const user = {
+    name: params.userName,
+    point: '0',
+    id: v4(),
   }
 
-  await redis((client) => client.set(room.id, JSON.stringify(room)))
+  room.users.push(user)
 
-  return room
+  await update(room)
+
+  return {
+    user,
+    id: params.roomId,
+  }
 }
 
-const redis = async <T = string | null>(
-  fnCallback: (
-    redis: RedisClientType<RedisModules, RedisFunctions, RedisScripts>
-  ) => Promise<T>
-) => {
-  const redis = await createClient()
-    .on('error', (err) => console.log('Redis Client Error', err))
-    .connect()
+export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
+  const id = v4()
+  const user = {
+    name: params.userName,
+    point: '0',
+    id: v4(),
+  }
+  const req = await fetch(`${env.PARTYKIT_URL}/party/${id}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      id,
+      users: [user],
+      slot: {
+        state: 'waiting',
+        values: params.slotValues ?? [
+          '0',
+          ' 0.5',
+          '1',
+          '2',
+          '3',
+          '5',
+          '8',
+          '13',
+        ],
+      },
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 
-  const response = await fnCallback(redis)
-  await redis.disconnect()
+  if (!req.ok) {
+    throw new Error('Something went wrong.')
+  }
 
-  return response
+  return {
+    user,
+    id,
+  }
+}
+
+export const update = async (poll: Poll): Promise<Poll> => {
+  const req = await fetch(`${env.PARTYKIT_URL}/party/${poll.id}`, {
+    method: 'POST',
+    body: JSON.stringify(poll),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (!req.ok) {
+    throw new Error('Something went wrong.')
+  }
+
+  return req.json()
 }

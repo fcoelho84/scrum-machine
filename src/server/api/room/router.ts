@@ -1,23 +1,26 @@
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-import { create, find, update } from './service'
-import {
-  CreateRoomSchema,
-  FindRoomSchema,
-  RoomSchema,
-  UpdateSchema,
-} from './types'
+import { create, find, join, update } from './service'
+
+import { PollSchema } from 'party/types'
+import { z } from 'zod'
+import { CreateRoomSchema, JoinRoomSchema, NewUserSchema } from './types'
 
 export default createTRPCRouter({
-  update: publicProcedure
-    .input(UpdateSchema)
-    .output(RoomSchema)
-    .mutation(({ input }) => update(input)),
-  create: publicProcedure
+  createRoom: publicProcedure
     .input(CreateRoomSchema)
-    .output(RoomSchema)
+    .output(NewUserSchema)
     .mutation(({ input }) => create(input)),
-  find: publicProcedure
-    .input(FindRoomSchema)
-    .output(RoomSchema)
-    .query(({ input }) => find(input.roomId)),
+
+  joinRoom: publicProcedure
+    .input(JoinRoomSchema)
+    .output(NewUserSchema)
+    .mutation(({ input }) => join(input)),
+  updateRoom: publicProcedure
+    .input(PollSchema)
+    .output(PollSchema)
+    .mutation(({ input }) => update(input)),
+  fetchRoom: publicProcedure
+    .input(z.string())
+    .output(PollSchema)
+    .query(({ input }) => find(input)),
 })

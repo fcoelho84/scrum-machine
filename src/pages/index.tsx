@@ -1,59 +1,28 @@
 import Head from 'next/head'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
-import { useCallback, useMemo } from 'react'
-import { api, type RouterInputs, type RouterOutputs } from '~/utils/api'
-
-type User = RouterInputs['room']['update']['user']
-
-type Room = RouterOutputs['room']['update']
+import {} from 'party/types'
+import { useMemo } from 'react'
+import { api } from '~/utils/api'
 
 export default function Home() {
   const router = useRouter()
-
-  const updateRoom = api.room.update.useMutation()
-  const createRoom = api.room.create.useMutation()
+  const joinRoom = api.room.joinRoom.useMutation()
+  const createRoom = api.room.createRoom.useMutation()
   const search = useSearchParams()
   const roomId = useMemo(() => search.get('roomId'), [search])
 
-  const persistUserId = (room: Room) => {
-    const currentUser = room.users.pop() as User
-    if (!currentUser.id) return
-    localStorage.setItem('userId', currentUser.id)
-  }
-
-  const update = useCallback(
-    async (user: User) => {
-      if (!roomId) return
-      const room = await updateRoom.mutateAsync({
-        roomId,
-        user: user,
-      })
-      persistUserId(room)
-      return room
-    },
-    [roomId, updateRoom]
-  )
-
-  const create = useCallback(
-    async (user: User) => {
-      const room = await createRoom.mutateAsync(user)
-      persistUserId(room)
-      return room
-    },
-    [createRoom]
-  )
-
-  const hanldeUpdate = async () => {
-    const room = await update({ isAdmin: false, name: 'false', point: 0 })
-    if (!room) return
-    await router.push(`/room/${room.id}`)
-  }
-
   const handleCreate = async () => {
-    const room = await create({ isAdmin: true, name: 'false', point: 0 })
-    if (!room) return
-    await router.push(`/room/${room.id}`)
+    const response = await createRoom.mutateAsync({ userName: '' })
+    localStorage.setItem('user', response.user.id)
+    router.push('/room/' + response.id)
+  }
+
+  const handleJoin = async () => {
+    if (!roomId) return
+    const response = await joinRoom.mutateAsync({ userName: '', roomId })
+    localStorage.setItem('user', response.user.id)
+    router.push('/room/' + roomId)
   }
 
   return (
@@ -75,8 +44,9 @@ export default function Home() {
             scrum machine
           </h1>
           <button
+            disabled={!roomId}
             className="w-full max-w-[300px] text-[1rem]"
-            onClick={hanldeUpdate}
+            onClick={handleJoin}
           >
             Entrar
           </button>

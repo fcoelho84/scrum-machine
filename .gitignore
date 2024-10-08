@@ -12,6 +12,10 @@
 /prisma/db.sqlite
 /prisma/db.sqlite-journal
 
+
+# partykit
+/.partykit/
+
 # next.js
 /.next/
 /out/

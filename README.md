@@ -8,6 +8,7 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 - [Figma Prototype](https://www.figma.com/design/XAjCxXLIids6H88OgreDwG/Scrum-Machine?node-id=0-1&node-type=canvas&t=GoQmLH1qg6ziZAUP-0)
+- [PartyKit](https://docs.partykit.io/)
 
 # TODO List
 
@@ -16,7 +17,7 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 - Animations ✔️
 - Room Page ✔️
 - Login Page
-- Redis
+- Redis or PartyKit Storage
 - Docker
 - Socket
 - Deploy

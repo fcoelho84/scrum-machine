@@ -7,6 +7,13 @@ export const UserSchema = z.object({
   isAdmin: z.boolean(),
 })
 
+export const UpdateSchema = z.object({
+  roomId: z.string(),
+  user: UserSchema.omit({ id: true }).merge(
+    z.object({ id: z.string().optional() })
+  ),
+})
+
 export const CreateRoomSchema = UserSchema.omit({ id: true })
 
 export const FindRoomSchema = z.object({ roomId: z.string() })
@@ -17,9 +24,11 @@ export const RoomSchema = z.object({
   users: z.array(UserSchema),
 })
 
-export type FindRoomQuery = z.infer<typeof FindRoomSchema>
+export type FindRoomParams = z.infer<typeof FindRoomSchema>
 
-export type CreateRoomQuery = z.infer<typeof CreateRoomSchema>
+export type CreateRoomParams = z.infer<typeof CreateRoomSchema>
+
+export type UpdateParams = z.infer<typeof UpdateSchema>
 
 export type Room = z.infer<typeof RoomSchema>
 

@@ -1,25 +1,58 @@
 import Head from 'next/head'
-import { api } from '~/utils/api'
-import { socket } from './_app'
+import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
+import { useCallback, useMemo } from 'react'
+import { api, type RouterInputs, type RouterOutputs } from '~/utils/api'
+
+type User = RouterInputs['room']['update']['user']
+
+type Room = RouterOutputs['room']['update']
 
 export default function Home() {
-  const { mutateAsync } = api.room.create.useMutation()
   const router = useRouter()
 
-  const createRoom = async () => {
-    const room = await mutateAsync({
-      name: 'teste',
-      point: 0,
-      isAdmin: true,
-    })
-    const [user] = room.users
-    if (!user) {
-      console.error('user not found')
-      return
-    }
-    localStorage.setItem('userId', user.id)
-    socket.connect().emit('join', room.id)
+  const updateRoom = api.room.update.useMutation()
+  const createRoom = api.room.create.useMutation()
+  const search = useSearchParams()
+  const roomId = useMemo(() => search.get('roomId'), [search])
+
+  const persistUserId = (room: Room) => {
+    const currentUser = room.users.pop() as User
+    if (!currentUser.id) return
+    localStorage.setItem('userId', currentUser.id)
+  }
+
+  const update = useCallback(
+    async (user: User) => {
+      if (!roomId) return
+      const room = await updateRoom.mutateAsync({
+        roomId,
+        user: user,
+      })
+      persistUserId(room)
+      return room
+    },
+    [roomId, updateRoom]
+  )
+
+  const create = useCallback(
+    async (user: User) => {
+      const room = await createRoom.mutateAsync(user)
+      persistUserId(room)
+      return room
+    },
+    [createRoom]
+  )
+
+  const hanldeUpdate = async () => {
+    const room = await update({ isAdmin: false, name: 'false', point: 0 })
+    if (!room) return
+    await router.push(`/room/${room.id}`)
+  }
+
+  const handleCreate = async () => {
+    const room = await create({ isAdmin: true, name: 'false', point: 0 })
+    if (!room) return
     await router.push(`/room/${room.id}`)
   }
 
@@ -41,11 +74,16 @@ export default function Home() {
           <h1 className="mb-[150px] block text-center text-8xl text-highlight">
             scrum machine
           </h1>
-          <button className="w-full max-w-[300px] text-[1rem]">Entrar</button>
+          <button
+            className="w-full max-w-[300px] text-[1rem]"
+            onClick={hanldeUpdate}
+          >
+            Entrar
+          </button>
           <button
             data-type="text"
             className="max-w-[300px] text-[1rem]"
-            onClick={createRoom}
+            onClick={handleCreate}
           >
             Criar sala
           </button>

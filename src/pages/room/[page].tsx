@@ -1,27 +1,33 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import JackpotLogo from '~/Components/Jackpot'
 import Slot from '~/Components/Slot'
 import SlotContainer from '~/Components/SlotContainer'
+import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'
-import { socket } from '../_app'
 
 const Room = () => {
   const [spin, setSpin] = useState(false)
-
-  const route = useRouter()
-  const { data } = api.room.find.useQuery(
-    {
-      roomId: route.query?.page as string,
-    },
-    { enabled: Boolean(route.query?.page) }
+  const router = useRouter()
+  const roomId = useMemo(
+    () => router.query?.page as string | undefined,
+    [router.query?.page]
   )
+  const { data } = api.room.find.useQuery(
+    { roomId: roomId! },
+    { enabled: Boolean(roomId), refetchOnWindowFocus: false }
+  )
+  const socket = useSocket({
+    onMessage(message) {
+      const obj = JSON.parse(message.data)
+      setSpin(obj.spin)
+      console.log(obj)
+    },
+  })
 
-  useEffect(() => {
-    if (!data) return
-
-    socket.emit('join', true)
-  }, [data])
+  const handleSpin = () => {
+    socket.send(JSON.stringify({ spin: !spin }))
+  }
 
   return (
     <div className="flex min-h-[100vh] w-full flex-col items-center justify-center gap-6 bg-primary p-6">
@@ -45,12 +51,7 @@ const Room = () => {
         ))}
       </div>
 
-      <button
-        className="z-10 min-w-[185px]"
-        onClick={() => {
-          setSpin((shouldSpin) => !shouldSpin)
-        }}
-      >
+      <button className="z-10 min-w-[185px]" onClick={handleSpin}>
         {!spin ? 'Girar' : 'Resetar'}
       </button>
     </div>

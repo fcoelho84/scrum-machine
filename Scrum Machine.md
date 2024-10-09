@@ -4,7 +4,7 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 
 
 
-![Figure 1](/.eraser/1LJGabM9KdfgxxJTgN86___jEhIatNqRDUQU829H2I2e2Tb30C2___---figure---fc9F1v9AKkLz_HN-SJJEf---figure---H7QGhHe2hcf9vCD0ZQGKJA.png "Figure 1")
+![Figure 1](/.eraser/1LJGabM9KdfgxxJTgN86___jEhIatNqRDUQU829H2I2e2Tb30C2___---figure---Fvx6dITzW9b2iIvyCbDbH---figure---H7QGhHe2hcf9vCD0ZQGKJA.png "Figure 1")
 
 ---
 
@@ -23,6 +23,7 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 - Prototype Mobile
 - Animations ✔️
 - Room Page ✔️
+- Auth
 - Login Page
 - PartyKit Storage
 - Socket

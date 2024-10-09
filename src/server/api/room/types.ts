@@ -10,11 +10,7 @@ export const JoinRoomSchema = z.object({
   roomId: z.string(),
 })
 
-export const NewUserSchema = z.object({
-  id: z.string(),
-  user: z.object({
-    name: z.string(),
-    id: z.string(),
-    point: z.string(),
-  }),
+export const OutputSchema = z.object({
+  roomId: z.string(),
+  userId: z.string(),
 })

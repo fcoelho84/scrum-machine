@@ -1,20 +1,46 @@
 import { z } from 'zod'
 
 const SlotSchema = z.object({
+  shouldSpin: z.boolean(),
   values: z.array(z.string()),
-  state: z.enum(['waiting', 'spining', 'stopped']),
 })
 
 const UserSchma = z.object({
+  state: z.enum(['waiting', 'voted', 'idle']),
   name: z.string(),
   id: z.string(),
   point: z.string(),
 })
 
-export const PollSchema = z.object({
+export const RoomSchema = z.object({
   id: z.string(),
   slot: SlotSchema,
   users: z.array(UserSchma),
 })
 
-export type Poll = z.infer<typeof PollSchema>
+export type Room = z.infer<typeof RoomSchema>
+
+export type UserUpdate = {
+  type: 'user-update'
+  data: {
+    state: 'waiting' | 'voted' | 'idle'
+    userId: string
+    point: string
+  }
+}
+
+export type UserUpdateBulk = {
+  type: 'user-update-bulk'
+  data: {
+    state: 'waiting' | 'voted' | 'idle'
+  }
+}
+
+export type SlotStateUpdate = {
+  type: 'slot-machine-state'
+  data: {
+    shouldSpin: boolean
+  }
+}
+
+export type ParsedMessage = SlotStateUpdate | UserUpdate | UserUpdateBulk

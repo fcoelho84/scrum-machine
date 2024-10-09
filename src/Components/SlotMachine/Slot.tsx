@@ -1,12 +1,11 @@
-import { type Poll } from 'party/types'
+import { type Room } from 'party/types'
 import { useMemo } from 'react'
 import { useSocket } from '~/hooks/useSocket'
-import { ramdomNumber } from '~/utils/numbers'
 
 interface SlotProps {
   delay: string
-  user: Poll['users'][0]
-  slot: Poll['slot']
+  user: Room['users'][0]
+  slot: Room['slot']
   isLastChild: boolean
 }
 
@@ -14,38 +13,42 @@ const Slot = (props: SlotProps) => {
   const socket = useSocket()
 
   const onAnimationEnd = () => {
+    socket.send({
+      type: 'user-update-bulk',
+      data: {
+        state: 'idle',
+      },
+    })
     if (!props.isLastChild) return
-    socket.send(
-      JSON.stringify({
-        type: 'slot-machine-state',
-        state: 'stopped',
-      })
-    )
+    socket.send({
+      type: 'slot-machine-state',
+      data: {
+        shouldSpin: false,
+      },
+    })
   }
 
   const list = useMemo(() => {
-    if (props.slot?.state === 'stopped') {
-      return [props.user.point]
-    }
-
-    if (props.slot?.state === 'waiting' && !props.user.point) {
-      return ['🤔']
-    }
-
-    if (props.user.point && props.slot?.state !== 'spining') {
+    if (props.user?.state === 'voted' && !props.slot.shouldSpin) {
       return ['✔️']
     }
 
-    const options: string[] = []
-    const icons = ['🍺', '👌', '🤌', '💀', '🎃', '🦍', '🌟', '🔥', '❤️‍🩹']
-
-    for (const number of props.slot?.values ?? []) {
-      options.push(icons[ramdomNumber(icons.length)]!)
-      options.push(String(number))
+    if (props.user?.state === 'idle' && !props.slot.shouldSpin) {
+      return [props.user.point]
     }
 
-    return [...options, props.user.point]
+    if (props.user?.state === 'waiting') {
+      return ['🤔']
+    }
+
+    if (props.slot.shouldSpin) {
+      return [...props.slot.values, props.user.point]
+    }
+
+    return props.slot.values
   }, [props])
+
+  console.log(list)
 
   return (
     <div className="relative top-0 max-h-[208px] max-w-fit overflow-hidden">
@@ -56,7 +59,7 @@ const Slot = (props: SlotProps) => {
       />
       <div
         id="slot"
-        data-spin={props.slot?.state === 'spining'}
+        data-spin={props.slot.shouldSpin}
         className="z-10 flex h-full w-full flex-col items-center justify-center"
         onAnimationEnd={onAnimationEnd}
         style={{ animationDelay: props.delay }}

@@ -2,9 +2,9 @@ import React from 'react'
 
 import { FaPlay } from 'react-icons/fa'
 import Slot from './Slot'
-import { type Poll } from 'party/types'
+import { type Room } from 'party/types'
 
-const SlotMachine = (props: Poll) => {
+const SlotMachine = (props: Room) => {
   return (
     <div className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2">
       <div className="absolute z-10 flex min-w-full flex-row items-center max-lg:hidden">

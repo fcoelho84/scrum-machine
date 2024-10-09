@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router'
-import { type Poll } from 'party/types'
+import { type Room, type ParsedMessage } from 'party/types'
 import usePartySocket from 'partysocket/react'
 import { useEffect, useMemo } from 'react'
 import { env } from '~/env'
+import { useUser } from './useUser'
 
 type UsePartySocketOptions = {
   onOpen?: (event: WebSocketEventMap['open']) => void
-  onMessage?: (event: Poll) => void
+  onMessage?: (event: Room) => void
   onClose?: (event: WebSocketEventMap['close']) => void
   onError?: (event: WebSocketEventMap['error']) => void
 }
@@ -21,8 +22,8 @@ export const useSocket = (options?: UsePartySocketOptions) => {
     startClosed: true,
     ...options,
     onMessage(message) {
-      const poll = JSON.parse(message.data) as Poll
-      options?.onMessage && options.onMessage(poll)
+      const parsedData = JSON.parse(message.data) as Room
+      options?.onMessage && options.onMessage(parsedData)
     },
     onError(e) {
       console.error(e)
@@ -38,5 +39,13 @@ export const useSocket = (options?: UsePartySocketOptions) => {
     socket.reconnect()
   }, [socket, roomId])
 
-  return socket
+  return useMemo(
+    () => ({
+      ...socket,
+      send(data: ParsedMessage) {
+        socket.send(JSON.stringify(data))
+      },
+    }),
+    [socket]
+  )
 }

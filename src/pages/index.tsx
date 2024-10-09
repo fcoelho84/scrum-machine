@@ -1,8 +1,10 @@
-import Head from 'next/head'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import {} from 'party/types'
-import { useMemo } from 'react'
+import { LegacyRef, useMemo, useRef, useState } from 'react'
+import Modal from '~/Components/Modal'
+import { useToggleable } from '~/hooks/useToggleable'
+import { useUser } from '~/hooks/useUser'
 import { api } from '~/utils/api'
 
 export default function Home() {
@@ -11,54 +13,68 @@ export default function Home() {
   const createRoom = api.room.createRoom.useMutation()
   const search = useSearchParams()
   const roomId = useMemo(() => search.get('roomId'), [search])
+  const [_, setUserId] = useUser()
+  const [open, toggleOpen] = useToggleable()
+  const [userName, setName] = useState('')
 
-  const handleCreate = async () => {
-    const response = await createRoom.mutateAsync({ userName: '' })
-    localStorage.setItem('user', response.user.id)
-    router.push('/room/' + response.id)
+  const createAndJoin = async () => {
+    const response = await createRoom.mutateAsync({ userName })
+    setUserId(response.userId)
+    router.push('/room/' + response.roomId)
   }
 
-  const handleJoin = async () => {
+  const join = async () => {
     if (!roomId) return
-    const response = await joinRoom.mutateAsync({ userName: '', roomId })
-    localStorage.setItem('user', response.user.id)
+    const response = await joinRoom.mutateAsync({ userName, roomId })
+    setUserId(response.userId)
     router.push('/room/' + roomId)
   }
 
-  return (
-    <>
-      <Head>
-        <title>Scrum Machine</title>
-        <meta name="description" content="scrum machine" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  const handle = () => {
+    if (roomId) join()
+    else createAndJoin()
+  }
 
-      <main className="z-10 min-h-screen bg-primary">
-        <img
-          className="absolute right-0 top-0 h-[100vh] w-full"
-          src="/wave.png"
-          alt="wave background"
-        />
-        <div className="absolute left-[80px] top-[130px] flex max-w-[500px] flex-col items-center">
-          <h1 className="mb-[150px] block text-center text-8xl text-highlight">
-            scrum machine
-          </h1>
+  return (
+    <div>
+      <Modal open={open}>
+        <div className="m-6 flex h-[320px] w-[420px] flex-col items-center justify-center gap-4">
+          <input
+            onChange={(event) => setName(event.currentTarget.value)}
+            placeholder="escolha um nome"
+            id="input-ref"
+          />
           <button
-            disabled={!roomId}
-            className="w-full max-w-[300px] text-[1rem]"
-            onClick={handleJoin}
+            className="mb-2 w-full max-w-[300px] text-[1rem]"
+            disabled={userName.length < 3}
+            onClick={handle}
           >
             Entrar
           </button>
-          <button
-            data-type="text"
-            className="max-w-[300px] text-[1rem]"
-            onClick={handleCreate}
-          >
-            Criar sala
-          </button>
         </div>
-      </main>
-    </>
+      </Modal>
+
+      <div className="relative left-[80px] top-[130px] flex max-w-[500px] flex-col items-center">
+        <h1 className=" mb-[150px] block text-center text-8xl text-highlight">
+          <span className="flicker-fast">scr</span>
+          <span>um mach</span>
+          <span className="flicker-fast">ine</span>
+        </h1>
+        <button
+          disabled={!roomId}
+          className="mb-2 w-full max-w-[300px] text-[1rem]"
+          onClick={toggleOpen}
+        >
+          Entrar
+        </button>
+        <button
+          data-type="text"
+          className="max-w-[300px] text-[1rem]"
+          onClick={toggleOpen}
+        >
+          Criar sala
+        </button>
+      </div>
+    </div>
   )
 }

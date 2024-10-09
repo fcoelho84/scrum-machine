@@ -46,7 +46,7 @@
 
 #slot[data-spin='true'] {
   transform: translateY(0px);
-  animation-name: slide;
+  animation-name: slot-spin;
   animation-duration: 2s;
   animation-direction: normal;
   animation-fill-mode: forwards;
@@ -55,6 +55,10 @@
 
 button {
   @apply w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold text-white transition-all hover:brightness-75 active:brightness-50;
+}
+
+input {
+  @apply h-[40px] border-b border-brown bg-transparent  text-blueGray outline-none;
 }
 
 button:disabled {

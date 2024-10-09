@@ -1,51 +1,71 @@
-import { type Poll } from 'party/types'
+import { type Room } from 'party/types'
 import { useSocket } from '~/hooks/useSocket'
+import { useUser } from '~/hooks/useUser'
 
-const Options = (props: Poll) => {
+const Options = (slot: Room['slot']) => {
+  const [userId] = useUser()
   const socket = useSocket()
 
-  const handle = (state: 'waiting' | 'spining' | 'stopped') => () => {
-    socket.send(
-      JSON.stringify({
-        type: 'slot-machine-state',
-        state,
-      })
-    )
+  const spin = () => {
+    socket.send({
+      type: 'slot-machine-state',
+      data: {
+        shouldSpin: true,
+      },
+    })
+  }
+
+  const reset = () => {
+    if (!userId) return
+
+    socket.send({
+      type: 'user-update-bulk',
+      data: {
+        state: 'waiting',
+      },
+    })
   }
 
   const choose = (point: string) => () => {
-    const userId = localStorage.getItem('user')
     if (!userId) return
 
-    socket.send(
-      JSON.stringify({
-        type: 'user-point',
+    socket.send({
+      type: 'user-update',
+      data: {
+        state: 'voted',
         userId,
         point,
-      })
-    )
+      },
+    })
   }
+
+  const parsedValues = slot.values.filter((value) => !isNaN(parseInt(value)))
 
   return (
     <div className="z-10 flex flex-wrap gap-2">
-      {(props.slot.values ?? []).map((item, key) => (
-        <button className="min-w-[76px]" key={key} onClick={choose(item)}>
+      {(parsedValues ?? []).map((item, key) => (
+        <button
+          className="min-w-[76px]"
+          key={key}
+          onClick={choose(item)}
+          disabled={slot.shouldSpin}
+        >
           {item}
         </button>
       ))}
       <button
-        className="min-w-[76px]"
-        onClick={handle('spining')}
-        disabled={props.slot.state === 'spining'}
+        className="ml-6 min-w-[76px]"
+        onClick={spin}
+        disabled={slot.shouldSpin}
       >
         Girar
       </button>
       <button
         className="min-w-[76px]"
-        onClick={handle('waiting')}
-        disabled={props.slot.state === 'spining'}
+        disabled={slot.shouldSpin}
+        onClick={reset}
       >
-        Resetar
+        Reiniciar
       </button>
     </div>
   )

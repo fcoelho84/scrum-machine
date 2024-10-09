@@ -1,41 +1,35 @@
 import { env } from '~/env'
-import { type Poll } from 'party/types'
+import { type Room } from 'party/types'
 import { v4 } from 'uuid'
 import { type z } from 'zod'
 import { type JoinRoomSchema, type CreateRoomSchema } from './types'
+import { ramdomNumber } from '~/utils/numbers'
+import { shuffleSlotValues } from '~/utils/slot'
 
-export const find = async (roomId: string): Promise<Poll> => {
-  const req = await fetch(`${env.PARTYKIT_URL}/party/${roomId}`, {
+export const find = async (roomId: string): Promise<Room> => {
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${roomId}`, {
     method: 'GET',
     next: {
       revalidate: 0,
     },
-  })
-
-  if (!req.ok) {
-    throw new Error('Something went wrong.')
-  }
-
-  return req.json()
+  }).then((response) => response.json())
 }
 
 export const join = async (params: z.infer<typeof JoinRoomSchema>) => {
   const room = await find(params.roomId)
 
-  const user = {
+  const userId = v4()
+
+  room.users.push({
+    state: 'idle',
     name: params.userName,
     point: '0',
-    id: v4(),
-  }
-
-  room.users.push(user)
+    id: userId,
+  })
 
   await update(room)
 
-  return {
-    user,
-    id: params.roomId,
-  }
+  return { roomId: params.roomId, userId }
 }
 
 export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
@@ -45,52 +39,31 @@ export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
     point: '0',
     id: v4(),
   }
-  const req = await fetch(`${env.PARTYKIT_URL}/party/${id}`, {
-    method: 'POST',
-    body: JSON.stringify({
-      id,
-      users: [user],
-      slot: {
-        state: 'waiting',
-        values: params.slotValues ?? [
-          '0',
-          ' 0.5',
-          '1',
-          '2',
-          '3',
-          '5',
-          '8',
-          '13',
-        ],
-      },
-    }),
-    headers: {
-      'Content-Type': 'application/json',
+
+  const body = JSON.stringify({
+    id,
+    users: [user],
+    slot: {
+      state: 'waiting',
+      values: shuffleSlotValues(params.slotValues),
     },
   })
 
-  if (!req.ok) {
-    throw new Error('Something went wrong.')
-  }
-
-  return {
-    user,
-    id,
-  }
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${id}`, {
+    method: 'POST',
+    body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(() => ({ roomId: id, userId: user.id }))
 }
 
-export const update = async (poll: Poll): Promise<Poll> => {
-  const req = await fetch(`${env.PARTYKIT_URL}/party/${poll.id}`, {
+export const update = async (room: Room): Promise<Room> => {
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${room.id}`, {
     method: 'POST',
-    body: JSON.stringify(poll),
+    body: JSON.stringify(room),
     headers: {
       'Content-Type': 'application/json',
     },
-  })
-
-  if (!req.ok) {
-    throw new Error('Something went wrong.')
-  }
-
-  return req.json()
+  }).then((response) => response.json())
 }

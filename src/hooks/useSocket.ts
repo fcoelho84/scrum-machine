@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { type Poll } from 'party/types'
 import usePartySocket from 'partysocket/react'
 import { useEffect, useMemo } from 'react'
+import { env } from '~/env'
 
 type UsePartySocketOptions = {
   onOpen?: (event: WebSocketEventMap['open']) => void
@@ -31,7 +32,7 @@ export const useSocket = (options?: UsePartySocketOptions) => {
   useEffect(() => {
     if (!roomId) return
     socket.updateProperties({
-      host: 'http://localhost:1999',
+      host: env.NEXT_PUBLIC_PARTYKIT_URL,
       room: roomId,
     })
     socket.reconnect()

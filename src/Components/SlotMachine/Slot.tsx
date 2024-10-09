@@ -77,7 +77,7 @@ const Slot = (props: SlotProps) => {
           ))}
         </div>
       </div>
-      <label className="max-w-[100px] truncate text-blueGray">
+      <label className="absolute bottom-0 max-w-[100px] truncate text-blueGray">
         {props.user.name}
       </label>
     </div>

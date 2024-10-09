@@ -48,8 +48,6 @@ const Slot = (props: SlotProps) => {
     return props.slot.values
   }, [props])
 
-  console.log(list)
-
   return (
     <div className="flex flex-col items-center">
       <div className="relative top-0 max-h-[208px] max-w-fit overflow-hidden">

@@ -51,30 +51,35 @@ const Slot = (props: SlotProps) => {
   console.log(list)
 
   return (
-    <div className="relative top-0 max-h-[208px] max-w-fit overflow-hidden">
-      <img
-        src={'/background.png'}
-        className="absolute aspect-[112/208]"
-        alt="slot background"
-      />
-      <div
-        id="slot"
-        data-spin={props.slot.shouldSpin}
-        className="z-10 flex h-full w-full flex-col items-center justify-center"
-        onAnimationEnd={onAnimationEnd}
-        style={{ animationDelay: props.delay }}
-      >
-        {list.map((item, index) => (
-          <div
-            key={index}
-            className="flex h-[208px] items-center justify-center"
-          >
-            <span className="min-w-[112px] text-center text-[62px] font-semibold text-highlight">
-              {item}
-            </span>
-          </div>
-        ))}
+    <div className="flex flex-col items-center">
+      <div className="relative top-0 max-h-[208px] max-w-fit overflow-hidden">
+        <img
+          src={'/background.png'}
+          className="absolute aspect-[112/208]"
+          alt="slot background"
+        />
+        <div
+          id="slot"
+          data-spin={props.slot.shouldSpin}
+          className="z-10 flex h-full w-full flex-col items-center justify-center"
+          onAnimationEnd={onAnimationEnd}
+          style={{ animationDelay: props.delay }}
+        >
+          {list.map((item, index) => (
+            <div
+              key={index}
+              className="flex h-[208px] items-center justify-center"
+            >
+              <span className="min-w-[112px] text-center text-[62px] font-semibold text-highlight">
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
+      <label className="max-w-[100px] truncate text-blueGray">
+        {props.user.name}
+      </label>
     </div>
   )
 }

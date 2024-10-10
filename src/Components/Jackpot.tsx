@@ -15,10 +15,12 @@ const Jackpot = (props: { users: Room['users'] }) => {
     if (props.users.length <= 1) return
 
     const values = new Set(props.users.map((user) => user.point))
-    const state = new Set(
-      props.users.map((user) => user.state).filter((state) => state === 'idle')
-    )
-    const jackpot = values.size === 1 && state.size == 1
+
+    const states = props.users
+      .map((user) => user.state)
+      .filter((state) => state === 'idle')
+
+    const jackpot = values.size === 1 && states.length === props.users.length
     if (jackpot) initAnimation()
     setIsJackpot(jackpot)
   }, [props.users, initAnimation])

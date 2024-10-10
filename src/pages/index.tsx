@@ -3,9 +3,11 @@ import { useRouter } from 'next/router'
 import {} from 'party/types'
 import { LegacyRef, useMemo, useRef, useState } from 'react'
 import Modal from '~/Components/Modal'
+import SlotMachine from '~/Components/SlotMachine'
 import { useToggleable } from '~/hooks/useToggleable'
 import { useUser } from '~/hooks/useUser'
 import { api } from '~/utils/api'
+import { shuffleSlotValues } from '~/utils/slot'
 
 export default function Home() {
   const router = useRouter()
@@ -36,7 +38,17 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">
+      <div className="absolute h-[100vh] max-h-[100vh] w-full rotate-6">
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_16s_infinite_linear] rounded-[36%] bg-secondary opacity-5" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_16s_infinite_linear] rounded-[37%] bg-secondary opacity-5" />
+
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_10s_infinite_linear] rounded-[46%] bg-secondary opacity-5" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_10s_infinite_linear] rounded-[57%] bg-secondary opacity-5" />
+
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[56%] bg-secondary opacity-5" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[67%] bg-secondary opacity-5" />
+      </div>
       <Modal open={open}>
         <div className="m-6 flex h-[320px] w-[420px] flex-col items-center justify-center gap-4">
           <input
@@ -54,8 +66,8 @@ export default function Home() {
         </div>
       </Modal>
 
-      <div className="relative left-[80px] top-[130px] flex max-w-[500px] flex-col items-center">
-        <h1 className=" mb-[150px] block text-center text-8xl text-highlight">
+      <div className="relative ml-[92px] mt-[148px] flex max-w-[500px] flex-col items-center max-sm:ml-0 max-sm:mt-[120px]">
+        <h1 className="mb-[150px] block text-center text-8xl text-highlight max-sm:text-6xl ">
           <span className="flicker-fast">scr</span>
           <span>um mach</span>
           <span className="flicker-fast">ine</span>

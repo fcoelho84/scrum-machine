@@ -16,12 +16,6 @@ export default function Document() {
       </Head>
       <body>
         <main className="z-10 min-h-screen bg-primary">
-          <img
-            className="absolute right-0 top-0 h-[100vh] w-full"
-            src="/wave.png"
-            alt="wave background"
-          />
-
           <Main />
           <NextScript />
         </main>

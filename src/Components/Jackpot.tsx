@@ -5,8 +5,6 @@ import { ramdomNumber } from '~/utils/numbers'
 
 const flickerAnimClass = ['flicker', 'flicker-fast', 'flicker-slow', '', '']
 
-const classNames = flickerAnimClass[ramdomNumber(flickerAnimClass?.length)]
-
 const Jackpot = (props: { users: Room['users'] }) => {
   const { canvasRef, initAnimation } = useJackpot()
   const [isJackpot, setIsJackpot] = useState(false)
@@ -39,7 +37,7 @@ const Jackpot = (props: { users: Room['users'] }) => {
       >
         {'JACKPOT'.split('').map((letter, index) => (
           <span
-            className={`text-[96px] max-lg:text-[32px] ${classNames}`}
+            className={`text-[96px] max-lg:text-[32px] ${flickerAnimClass[ramdomNumber(flickerAnimClass?.length)]}`}
             key={index}
           >
             {letter}

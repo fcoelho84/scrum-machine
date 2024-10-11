@@ -2,18 +2,16 @@ import { useParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { CiShare1 } from 'react-icons/ci'
-import { useUser } from '~/hooks/useUser'
+import { socket } from '~/pages'
 
 const Actions = () => {
   const parms = useParams<{ page: string }>()
-  const [userId] = useUser()
   const router = useRouter()
 
   useEffect(() => {
-    if (!userId) {
-      router.push(window.location.origin + `?roomId=${parms.page}`)
-    }
-  }, [parms.page, router, userId])
+    if (socket) return
+    router.push(window.location.origin + `?roomId=${parms.page}`)
+  }, [parms.page, router])
 
   const share = () => {
     if (!parms.page || typeof window === undefined) return

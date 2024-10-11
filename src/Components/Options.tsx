@@ -1,11 +1,9 @@
 import { type Room } from 'party/types'
 import { useEffect, useState } from 'react'
 import { useSocket } from '~/hooks/useSocket'
-import { useUser } from '~/hooks/useUser'
 
 const Options = (slot: Room['slot']) => {
   const [point, setPoint] = useState('')
-  const [userId] = useUser()
   const socket = useSocket()
 
   useEffect(() => {
@@ -24,8 +22,6 @@ const Options = (slot: Room['slot']) => {
   }
 
   const reset = () => {
-    if (!userId) return
-
     socket.send({
       type: 'user-update-bulk',
       data: {
@@ -35,13 +31,12 @@ const Options = (slot: Room['slot']) => {
   }
 
   const choose = (point: string) => () => {
-    if (!userId) return
     setPoint(point)
     socket.send({
       type: 'user-update',
       data: {
         state: 'voted',
-        userId,
+        id: socket.id,
         point,
       },
     })

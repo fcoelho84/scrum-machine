@@ -5,40 +5,35 @@ import { useEffect, useMemo, useState } from 'react'
 import Modal from '~/Components/Modal'
 import { env } from '~/env'
 import { useToggleable } from '~/hooks/useToggleable'
-import { useUser } from '~/hooks/useUser'
 import { api } from '~/utils/api'
 
 export let socket: PartySocket
 
 export default function Home() {
   const router = useRouter()
-  const joinRoom = api.room.joinRoom.useMutation()
   const createRoom = api.room.createRoom.useMutation()
   const search = useSearchParams()
   const roomId = useMemo(() => search.get('roomId'), [search])
-  const [_, setUserId] = useUser()
   const [open, toggleOpen, setToggle] = useToggleable()
-  const [userName, setName] = useState('')
+  const [name, setName] = useState('')
 
   const createAndJoin = async () => {
-    const response = await createRoom.mutateAsync({ userName })
-    setUserId(response.userId)
+    const response = await createRoom.mutateAsync({})
+
     router.push('/room/' + response.roomId)
-    init(response.roomId, response.userId)
+    init(response.roomId, name)
   }
 
-  const join = async () => {
+  const join = async (roomId: string) => {
     if (!roomId) return
-    const response = await joinRoom.mutateAsync({ userName, roomId })
-    setUserId(response.userId)
     router.push('/room/' + roomId)
-    init(roomId, response.userId)
+    init(roomId, name)
   }
 
-  const init = (room: string, userId: string) => {
+  const init = (room: string, name: string) => {
     socket = new PartySocket({
       query: {
-        userId,
+        name,
       },
       host: env.NEXT_PUBLIC_PARTYKIT_URL,
       room,
@@ -46,7 +41,7 @@ export default function Home() {
   }
 
   const handle = () => {
-    if (roomId) join()
+    if (roomId) join(roomId)
     else createAndJoin()
   }
 
@@ -75,7 +70,7 @@ export default function Home() {
           />
           <button
             className="mb-2 w-full max-w-[300px] text-[1rem]"
-            disabled={userName.length < 3}
+            disabled={name.length < 3}
             onClick={handle}
           >
             Entrar

@@ -24,8 +24,8 @@ export type UserUpdate = {
   type: 'user-update'
   data: {
     state: 'waiting' | 'voted' | 'idle'
-    userId: string
     point: string
+    id: string
   }
 }
 

@@ -7,7 +7,7 @@ import {
   type SlotStateUpdate,
   type Room,
 } from './types'
-import { pack } from 'msgpackr'
+import { pack, unpack } from 'msgpackr'
 
 export class Message {
   constructor(
@@ -26,9 +26,9 @@ export class Message {
     this.room.broadcast(pack(room))
   }
 
-  async handle(message: string) {
+  async handle(message: any) {
     const state = await this.storageService.fetch()
-    const parsedMessage = JSON.parse(message) as ParsedMessage
+    const parsedMessage = unpack(message) as ParsedMessage
     const handler = this.getFunction(parsedMessage.type)
     if (!handler || !state) return
     const newState = handler(parsedMessage.data, state)
@@ -55,7 +55,7 @@ export class Message {
 
   private updateUser(data: UserUpdate['data'], state: Room) {
     state.users = state.users.map((user) => {
-      if (user.id !== data.userId) return user
+      if (user.id !== data.id) return user
       return {
         ...user,
         ...data,

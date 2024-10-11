@@ -1,19 +1,15 @@
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-import { create, find, join, update } from './service'
+import { create, find, update } from './service'
 
 import { RoomSchema } from 'party/types'
 import { z } from 'zod'
-import { CreateRoomSchema, JoinRoomSchema, OutputSchema } from './types'
+import { CreateRoomSchema, OutputSchema } from './types'
 
 export default createTRPCRouter({
   createRoom: publicProcedure
     .input(CreateRoomSchema)
     .output(OutputSchema)
     .mutation(({ input }) => create(input)),
-  joinRoom: publicProcedure
-    .input(JoinRoomSchema)
-    .output(OutputSchema)
-    .mutation(({ input }) => join(input)),
   updateRoom: publicProcedure
     .input(RoomSchema)
     .output(RoomSchema)

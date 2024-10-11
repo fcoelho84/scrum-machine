@@ -9,16 +9,28 @@ export class Connection {
     readonly messageService: Message
   ) {}
 
-  async logout(connection: PartyKitConn) {
-    const userId = this.findUserId(connection)
+  async login(connection: PartyKitConn) {
+    const name = new URL(connection.uri).searchParams.get('name')
     const state = await this.storageService.fetch()
-    if (!userId || !state?.users) return
-    state.users = state.users.filter((user) => user.id !== userId)
+    const user = state?.users.find((user) => user.id === connection.id)
+    if (!name || !state || user) return
+    const users = state?.users ?? []
+    users.push({
+      state: 'idle',
+      name,
+      point: '0',
+      id: connection.id,
+    })
+    state.users = users
     this.storageService.save(state)
     this.messageService.broadcast(state)
   }
 
-  private findUserId(connection: PartyKitConn) {
-    return new URL(connection.uri).searchParams.get('userId')
+  async logout(connection: PartyKitConn) {
+    const state = await this.storageService.fetch()
+    if (!state?.users) return
+    state.users = state.users.filter((user) => user.id !== connection.id)
+    this.storageService.save(state)
+    this.messageService.broadcast(state)
   }
 }

@@ -1,4 +1,5 @@
 import { unpack } from 'msgpackr/unpack'
+import { pack } from 'msgpackr/pack'
 import { useRouter } from 'next/router'
 import { type Room, type ParsedMessage } from 'party/types'
 import { useEffect, useMemo } from 'react'
@@ -30,8 +31,9 @@ export const useSocket = (options?: UsePartySocketOptions) => {
 
   return useMemo(
     () => ({
+      id: socket?.id,
       send(data: ParsedMessage) {
-        socket?.send(JSON.stringify(data))
+        socket?.send(pack(data))
       },
     }),
     []

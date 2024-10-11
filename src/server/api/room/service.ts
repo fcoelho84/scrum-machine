@@ -2,7 +2,7 @@ import { env } from '~/env'
 import { type Room } from 'party/types'
 import { v4 } from 'uuid'
 import { type z } from 'zod'
-import { type JoinRoomSchema, type CreateRoomSchema } from './types'
+import { type CreateRoomSchema } from './types'
 import { shuffleSlotValues } from '~/utils/slot'
 
 export const find = async (roomId: string): Promise<Room> => {
@@ -14,47 +14,23 @@ export const find = async (roomId: string): Promise<Room> => {
   }).then((response) => response.json())
 }
 
-export const join = async (params: z.infer<typeof JoinRoomSchema>) => {
-  const room = await find(params.roomId)
-
-  const userId = v4()
-
-  room.users.push({
-    state: 'idle',
-    name: params.userName,
-    point: '0',
-    id: userId,
-  })
-
-  await update(room)
-
-  return { roomId: params.roomId, userId }
-}
-
 export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
-  const id = v4()
-  const user = {
-    name: params.userName,
-    point: '0',
+  const body = {
     id: v4(),
-  }
-
-  const body = JSON.stringify({
-    id,
-    users: [user],
+    users: [],
     slot: {
       state: 'waiting',
       values: shuffleSlotValues(params.slotValues),
     },
-  })
+  }
 
-  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${id}`, {
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${body.id}`, {
     method: 'POST',
-    body,
+    body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(() => ({ roomId: id, userId: user.id }))
+  }).then(() => ({ roomId: body.id }))
 }
 
 export const update = async (room: Room): Promise<Room> => {

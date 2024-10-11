@@ -61,7 +61,6 @@ export const useJackpot = () => {
 
   const initAnimation = useCallback(() => {
     if (intervalRef.current) return
-    console.log('called')
     endAnimation()
     const canvasContext = canvasRef.current?.getContext('2d')
     if (!canvasContext) return

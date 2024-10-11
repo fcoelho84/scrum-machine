@@ -29,6 +29,11 @@ export default class Server implements Party.Server {
     return this.api.get()
   }
 
+  async onConnect() {
+    const state = await this.storageService.fetch()
+    this.messageService.broadcast(state)
+  }
+
   async onClose(connection: Party.Connection) {
     await this.connectionService.logout(connection)
   }

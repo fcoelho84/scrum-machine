@@ -17,14 +17,14 @@ export default function Home() {
   const search = useSearchParams()
   const roomId = useMemo(() => search.get('roomId'), [search])
   const [_, setUserId] = useUser()
-  const [open, toggleOpen] = useToggleable()
+  const [open, toggleOpen, setToggle] = useToggleable()
   const [userName, setName] = useState('')
 
   const createAndJoin = async () => {
     const response = await createRoom.mutateAsync({ userName })
     setUserId(response.userId)
     router.push('/room/' + response.roomId)
-    init(response.roomId)
+    init(response.roomId, response.userId)
   }
 
   const join = async () => {
@@ -32,11 +32,14 @@ export default function Home() {
     const response = await joinRoom.mutateAsync({ userName, roomId })
     setUserId(response.userId)
     router.push('/room/' + roomId)
-    init(roomId)
+    init(roomId, response.userId)
   }
 
-  const init = (room: string) => {
+  const init = (room: string, userId: string) => {
     socket = new PartySocket({
+      query: {
+        userId,
+      },
       host: env.NEXT_PUBLIC_PARTYKIT_URL,
       room,
     })
@@ -48,8 +51,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (roomId) toggleOpen()
-  }, [roomId, toggleOpen])
+    setToggle(Boolean(roomId))
+  }, [roomId, setToggle])
 
   return (
     <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">

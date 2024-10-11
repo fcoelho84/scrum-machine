@@ -20,6 +20,6 @@ export default createTRPCRouter({
     .mutation(({ input }) => update(input)),
   fetchRoom: publicProcedure
     .input(z.string())
-    .output(RoomSchema)
+    .output(z.any())
     .query(({ input }) => find(input)),
 })

@@ -17,6 +17,7 @@
     "@trpc/next": "^10.45.1",
     "@trpc/react-query": "^10.45.1",
     "@trpc/server": "^10.45.1",
+    "msgpackr": "^1.11.0",
     "next": "^14.1.0",
     "partysocket": "^1.0.2",
     "react": "18.2.0",

@@ -1,13 +1,14 @@
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
-import {} from 'party/types'
-import { LegacyRef, useMemo, useRef, useState } from 'react'
+import PartySocket from 'partysocket'
+import { useEffect, useMemo, useState } from 'react'
 import Modal from '~/Components/Modal'
-import SlotMachine from '~/Components/SlotMachine'
+import { env } from '~/env'
 import { useToggleable } from '~/hooks/useToggleable'
 import { useUser } from '~/hooks/useUser'
 import { api } from '~/utils/api'
-import { shuffleSlotValues } from '~/utils/slot'
+
+export let socket: PartySocket
 
 export default function Home() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function Home() {
     const response = await createRoom.mutateAsync({ userName })
     setUserId(response.userId)
     router.push('/room/' + response.roomId)
+    init(response.roomId)
   }
 
   const join = async () => {
@@ -30,12 +32,24 @@ export default function Home() {
     const response = await joinRoom.mutateAsync({ userName, roomId })
     setUserId(response.userId)
     router.push('/room/' + roomId)
+    init(roomId)
+  }
+
+  const init = (room: string) => {
+    socket = new PartySocket({
+      host: env.NEXT_PUBLIC_PARTYKIT_URL,
+      room,
+    })
   }
 
   const handle = () => {
     if (roomId) join()
     else createAndJoin()
   }
+
+  useEffect(() => {
+    if (roomId) toggleOpen()
+  }, [roomId, toggleOpen])
 
   return (
     <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">
@@ -49,7 +63,7 @@ export default function Home() {
         <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[56%] bg-secondary opacity-5" />
         <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[67%] bg-secondary opacity-5" />
       </div>
-      <Modal open={open}>
+      <Modal open={open} onClose={toggleOpen}>
         <div className="m-6 flex h-[320px] w-[420px] flex-col items-center justify-center gap-4">
           <input
             onChange={(event) => setName(event.currentTarget.value)}

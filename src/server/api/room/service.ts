@@ -3,7 +3,6 @@ import { type Room } from 'party/types'
 import { v4 } from 'uuid'
 import { type z } from 'zod'
 import { type JoinRoomSchema, type CreateRoomSchema } from './types'
-import { ramdomNumber } from '~/utils/numbers'
 import { shuffleSlotValues } from '~/utils/slot'
 
 export const find = async (roomId: string): Promise<Room> => {

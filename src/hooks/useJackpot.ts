@@ -60,6 +60,8 @@ export const useJackpot = () => {
   )
 
   const initAnimation = useCallback(() => {
+    if (intervalRef.current) return
+    console.log('called')
     endAnimation()
     const canvasContext = canvasRef.current?.getContext('2d')
     if (!canvasContext) return
@@ -70,7 +72,7 @@ export const useJackpot = () => {
         x: Math.random() * 800,
         y: Math.random() * (800 * -1),
         angle: Math.random() * (2 * Math.PI),
-        speed: 10 + Math.random() * 10,
+        speed: 10 + Math.random() * i,
         currentFrame: 0,
         direction: i % 2 === 1 ? 1 : -1,
       }

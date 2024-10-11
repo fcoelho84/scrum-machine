@@ -1,19 +1,14 @@
 import { type Room } from 'party/types'
 import { memo, useEffect, useState } from 'react'
 import { useJackpot } from '~/hooks/useJackpot'
-import { ramdomNumber } from '~/utils/numbers'
 
-const flickerAnimClass = ['flicker', 'flicker-fast', 'flicker-slow', '', '']
-
-const Jackpot = (props: { users: Room['users'] }) => {
+const Jackpot = (props: Room) => {
   const { canvasRef, initAnimation } = useJackpot()
   const [isJackpot, setIsJackpot] = useState(false)
 
   useEffect(() => {
-    if (props.users.length <= 1) return
-
+    if (props.users.length === 1 || props.slot.shouldSpin) return
     const values = new Set(props.users.map((user) => user.point))
-
     const states = props.users
       .map((user) => user.state)
       .filter((state) => state === 'idle')
@@ -21,7 +16,7 @@ const Jackpot = (props: { users: Room['users'] }) => {
     const jackpot = values.size === 1 && states.length === props.users.length
     if (jackpot) initAnimation()
     setIsJackpot(jackpot)
-  }, [props.users, initAnimation])
+  }, [props.users, initAnimation, props.slot.shouldSpin])
 
   return (
     <>
@@ -35,14 +30,17 @@ const Jackpot = (props: { users: Room['users'] }) => {
         className="shine rounded-xl border-[4px] border-solid border-secondary/55 px-12 py-2 text-highlight transition-all"
         data-active={isJackpot}
       >
-        {'JACKPOT'.split('').map((letter, index) => (
-          <span
-            className={`text-[96px] max-lg:text-[32px] ${flickerAnimClass[ramdomNumber(flickerAnimClass?.length)]}`}
-            key={index}
-          >
-            {letter}
-          </span>
-        ))}
+        <span className="flicker text-[96px] max-lg:text-[32px]">JA</span>
+        <span className="flicker flicker-fast text-[96px] max-lg:text-[32px]">
+          C
+        </span>
+        <span className="flicker text-[96px] max-lg:text-[32px]">K</span>
+        <span className="flicker flicker-slow text-[96px] max-lg:text-[32px]">
+          P
+        </span>
+        <span className="flicker flicker-fast text-[96px] max-lg:text-[32px]">
+          OT
+        </span>
       </span>
     </>
   )

@@ -1,10 +1,18 @@
 import { type Room } from 'party/types'
+import { useEffect, useState } from 'react'
 import { useSocket } from '~/hooks/useSocket'
 import { useUser } from '~/hooks/useUser'
 
 const Options = (slot: Room['slot']) => {
+  const [point, setPoint] = useState('')
   const [userId] = useUser()
   const socket = useSocket()
+
+  useEffect(() => {
+    if (slot.shouldSpin) {
+      setPoint('')
+    }
+  }, [slot])
 
   const spin = () => {
     socket.send({
@@ -28,7 +36,7 @@ const Options = (slot: Room['slot']) => {
 
   const choose = (point: string) => () => {
     if (!userId) return
-
+    setPoint(point)
     socket.send({
       type: 'user-update',
       data: {
@@ -39,13 +47,16 @@ const Options = (slot: Room['slot']) => {
     })
   }
 
-  const parsedValues = slot.values.filter((value) => !isNaN(parseInt(value)))
+  const parsedValues = (slot?.values ?? []).filter(
+    (value) => !isNaN(parseInt(value))
+  )
 
   return (
-    <div className="z-10 flex flex-wrap gap-2">
+    <div className="z-10 flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-4">
       {(parsedValues ?? []).map((item, key) => (
         <button
-          className="min-w-[76px]"
+          data-active={point === item}
+          className="min-w-[76px] data-[active=true]:brightness-50"
           key={key}
           onClick={choose(item)}
           disabled={slot.shouldSpin}

@@ -16,9 +16,6 @@ The proposal is to develop a site for task scoring voting. The goal is to deepen
 - Prototype Mobile
 - Animations ✔️
 - Room Page ✔️
-- Auth
-- Login Page
-- PartyKit Storage
-- Socket
-- Deploy
-- Tests
+- PartyKit Storage ✔️
+- Socket ✔️
+- Deploy ✔️

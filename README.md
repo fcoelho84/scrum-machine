@@ -2,6 +2,8 @@
 
 The proposal is to develop a site for task scoring voting. The goal is to deepen the understanding of design concepts in Figma and explore the [﻿T3 Stack](https://create.t3.gg/)."
 
+![Gif](https://raw.githubusercontent.com/fcoelho84/scrum-machine/refs/heads/master/public/scrummachine.gif)
+
 # Materials I Used
 
 - [﻿Next.js](https://nextjs.org/)

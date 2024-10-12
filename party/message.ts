@@ -31,9 +31,20 @@ export class Message {
     const parsedMessage = unpack(message) as ParsedMessage
     const handler = this.getFunction(parsedMessage.type)
     if (!handler || !state) return
-    const newState = handler(parsedMessage.data, state)
+    const room = handler(parsedMessage.data, state)
+    const newState = await this.shouldRevealVotes(room)
     this.storageService.save(newState)
     this.broadcast(newState)
+  }
+
+  private async shouldRevealVotes(state: Room) {
+    if (!state.slot.shouldSpin) return state
+    const votes = await this.storageService.fetchVotes()
+    state.users = state.users.map((user) => {
+      user.point = votes[user.id] ?? '👀'
+      return user
+    })
+    return state
   }
 
   private getFunction(name: keyof typeof this.functionMap) {

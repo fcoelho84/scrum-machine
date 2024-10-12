@@ -7,7 +7,7 @@ export class Api {
 
   async post(req: Request) {
     const room = await req.json<Room>()
-    this.storageService.save(room)
+    await this.storageService.save(room)
     return new Response(JSON.stringify(room), { status: 200 })
   }
 
@@ -17,5 +17,15 @@ export class Api {
       return new Response('Not found', { status: 404 })
     }
     return new Response(JSON.stringify(data), { status: 200 })
+  }
+
+  async put(req: Request) {
+    const json = await req.json<{ id: string; vote: string }>()
+    const state = await this.storageService.fetch()
+    if (!json || !state?.users.find((user) => user.id === json.id)) {
+      return new Response('Not found', { status: 404 })
+    }
+    await this.storageService.saveVote(json.id, json.vote)
+    return new Response('ok', { status: 200 })
   }
 }

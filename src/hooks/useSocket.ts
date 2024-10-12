@@ -32,6 +32,7 @@ export const useSocket = (options?: UsePartySocketOptions) => {
   return useMemo(
     () => ({
       id: socket?.id,
+      roomId: socket?.room,
       send(data: ParsedMessage) {
         socket?.send(pack(data))
       },

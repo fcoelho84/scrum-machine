@@ -1,11 +1,12 @@
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-import { create, find, update } from './service'
+import { create, find, update, vote } from './service'
 
 import { RoomSchema } from 'party/types'
 import { z } from 'zod'
-import { CreateRoomSchema, OutputSchema } from './types'
+import { CreateRoomSchema, OutputSchema, VoteSchema } from './types'
 
 export default createTRPCRouter({
+  vote: publicProcedure.input(VoteSchema).mutation(({ input }) => vote(input)),
   createRoom: publicProcedure
     .input(CreateRoomSchema)
     .output(OutputSchema)

@@ -9,6 +9,12 @@ export const JoinRoomSchema = z.object({
   roomId: z.string(),
 })
 
+export const VoteSchema = z.object({
+  roomId: z.string(),
+  id: z.string(),
+  vote: z.string(),
+})
+
 export const OutputSchema = z.object({
   roomId: z.string(),
 })

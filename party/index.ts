@@ -26,6 +26,7 @@ export default class Server implements Party.Server {
 
   async onRequest(req: Party.Request) {
     if (req.method === 'POST') return this.api.post(req)
+    if (req.method === 'PUT') return this.api.put(req)
     return this.api.get()
   }
 

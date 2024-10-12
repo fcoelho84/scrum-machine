@@ -1,10 +1,12 @@
 import { type Room } from 'party/types'
 import { useEffect, useState } from 'react'
 import { useSocket } from '~/hooks/useSocket'
+import { api } from '~/utils/api'
 
 const Options = (slot: Room['slot']) => {
   const [point, setPoint] = useState('')
   const socket = useSocket()
+  const vote = api.room.vote.useMutation()
 
   useEffect(() => {
     if (slot.shouldSpin) {
@@ -30,15 +32,21 @@ const Options = (slot: Room['slot']) => {
     })
   }
 
-  const choose = (point: string) => () => {
+  const choose = (point: string) => async () => {
     setPoint(point)
     socket.send({
       type: 'user-update',
       data: {
         state: 'voted',
         id: socket.id,
-        point,
+        point: '🤫',
       },
+    })
+    if (!socket.roomId) return
+    await vote.mutateAsync({
+      id: socket.id,
+      vote: point,
+      roomId: socket.roomId,
     })
   }
 

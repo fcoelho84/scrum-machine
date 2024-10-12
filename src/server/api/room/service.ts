@@ -1,8 +1,8 @@
 import { env } from '~/env'
-import { type Room } from 'party/types'
+import { type RoomSchema, type Room } from 'party/types'
 import { v4 } from 'uuid'
 import { type z } from 'zod'
-import { type CreateRoomSchema } from './types'
+import { type VoteSchema, type CreateRoomSchema } from './types'
 import { shuffleSlotValues } from '~/utils/slot'
 
 export const find = async (roomId: string): Promise<Room> => {
@@ -33,7 +33,9 @@ export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
   }).then(() => ({ roomId: body.id }))
 }
 
-export const update = async (room: Room): Promise<Room> => {
+export const update = async (
+  room: z.infer<typeof RoomSchema>
+): Promise<Room> => {
   return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${room.id}`, {
     method: 'POST',
     body: JSON.stringify(room),
@@ -41,4 +43,14 @@ export const update = async (room: Room): Promise<Room> => {
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json())
+}
+
+export const vote = async (vote: z.infer<typeof VoteSchema>) => {
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${vote.roomId}`, {
+    method: 'PUT',
+    body: JSON.stringify(vote),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }

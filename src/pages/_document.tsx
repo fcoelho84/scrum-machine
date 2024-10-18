@@ -14,15 +14,10 @@ export default function Document() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <main className="z-10 min-h-screen bg-primary max-lg:hidden">
+        <main className="z-10 min-h-screen max-w-[] bg-primary">
           <title>Scrum Machine</title>
           <Main />
           <NextScript />
-        </main>
-        <main className="z-10 flex min-h-screen items-center justify-center bg-primary lg:hidden">
-          <h2 className="text-center text-blueGray">
-            Disponível apenas na versão desktop no momento... :(
-          </h2>
         </main>
       </body>
     </Html>

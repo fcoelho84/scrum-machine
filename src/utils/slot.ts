@@ -1,7 +1,7 @@
 import { ramdomNumber } from './numbers'
 
 export const shuffleSlotValues = (
-  values = ['0', ' 0.5', '1', '2', '3', '5', '8', '13']
+  values = ['0', '0.5', '1', '2', '3', '5', '8', '13']
 ) => {
   const options: string[] = []
   const icons = ['🍺', '👌', '🤌', '💀', '🎃', '🦍', '🌟', '🔥', '❤️‍🩹']
@@ -12,4 +12,11 @@ export const shuffleSlotValues = (
   }
 
   return options
+}
+
+export const removeShuffleIcons = (values: string[]) => {
+  return values.filter(
+    (value) =>
+      !['🍺', '👌', '🤌', '💀', '🎃', '🦍', '🌟', '🔥', '❤️‍🩹'].includes(value)
+  )
 }

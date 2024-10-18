@@ -29,12 +29,14 @@ const Slot = (props: SlotProps) => {
   }
 
   const list = useMemo(() => {
+    const vote = props.user.point || '👀'
+
     if (props.user?.state === 'voted' && !props.slot.shouldSpin) {
       return ['✔️']
     }
 
     if (props.user?.state === 'idle' && !props.slot.shouldSpin) {
-      return [props.user.point]
+      return [vote]
     }
 
     if (props.user?.state === 'waiting') {
@@ -42,7 +44,7 @@ const Slot = (props: SlotProps) => {
     }
 
     if (props.slot.shouldSpin) {
-      return [...props.slot.values, props.user.point]
+      return [...props.slot.values, vote]
     }
 
     return props.slot.values
@@ -57,9 +59,8 @@ const Slot = (props: SlotProps) => {
           alt="slot background"
         />
         <div
-          id="slot"
           data-spin={props.slot.shouldSpin}
-          className="z-10 flex h-full w-full flex-col items-center justify-center"
+          className="z-10 flex h-full w-full translate-x-0 flex-col items-center justify-center data-[spin=true]:animate-spin"
           onAnimationEnd={onAnimationEnd}
           style={{ animationDelay: props.delay }}
         >
@@ -74,10 +75,10 @@ const Slot = (props: SlotProps) => {
             </div>
           ))}
         </div>
+        <label className="absolute bottom-0 w-full max-w-[112px] truncate text-center text-blueGray">
+          {props.user.name}
+        </label>
       </div>
-      <label className="absolute bottom-0 max-w-[100px] truncate text-blueGray">
-        {props.user.name}
-      </label>
     </div>
   )
 }

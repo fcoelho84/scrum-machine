@@ -10,8 +10,8 @@ const Jackpot = (props: Room) => {
     if (props.users.length === 1 || props.slot.shouldSpin) return
     const values = new Set(props.users.map((user) => user.point))
     const states = props.users
+      .filter(({ state, point }) => state === 'idle' || point !== '')
       .map((user) => user.state)
-      .filter((state) => state === 'idle')
 
     const jackpot = values.size === 1 && states.length === props.users.length
     if (jackpot) initAnimation()
@@ -27,20 +27,14 @@ const Jackpot = (props: Room) => {
         height={800}
       />
       <span
-        className="shine rounded-xl border-[4px] border-solid border-secondary/55 px-12 py-2 text-highlight transition-all"
-        data-active={isJackpot}
+        className="data-[jackpot=true]:animate-shine relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-all data-[jackpot=false]:text-highlight/35 data-[jackpot=false]:blur-[4px] max-sm:hidden"
+        data-jackpot={isJackpot}
       >
-        <span className="flicker text-[96px] max-lg:text-[32px]">JA</span>
-        <span className="flicker flicker-fast text-[96px] max-lg:text-[32px]">
-          C
-        </span>
-        <span className="flicker text-[96px] max-lg:text-[32px]">K</span>
-        <span className="flicker flicker-slow text-[96px] max-lg:text-[32px]">
-          P
-        </span>
-        <span className="flicker flicker-fast text-[96px] max-lg:text-[32px]">
-          OT
-        </span>
+        <span className="animate-flicker text-[5vw]">JA</span>
+        <span className="animate-flicker text-[5vw] duration-[6s]">C</span>
+        <span className="animate-flicker text-[5vw]">K</span>
+        <span className="animate-flicker text-[5vw] duration-[12s]">P</span>
+        <span className="animate-flicker text-[5vw] duration-[6s]">OT</span>
       </span>
     </>
   )

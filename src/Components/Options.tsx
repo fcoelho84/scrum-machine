@@ -55,33 +55,39 @@ const Options = (slot: Room['slot']) => {
   )
 
   return (
-    <div className="z-10 flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-4">
-      {(parsedValues ?? []).map((item, key) => (
+    <>
+      <div className="z-10 w-full overflow-hidden">
+        <div className="flex gap-2 overflow-x-auto md:justify-center">
+          {(parsedValues ?? []).map((item, key) => (
+            <button
+              data-active={point === item}
+              className="min-w-[5vw] data-[active=true]:brightness-50 max-md:min-w-fit max-md:text-[16px]"
+              key={key}
+              onClick={choose(item)}
+              disabled={slot.shouldSpin}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="z-10 flex w-full flex-wrap justify-center gap-2 max-md:justify-between">
         <button
-          data-active={point === item}
-          className="min-w-[76px] data-[active=true]:brightness-50"
-          key={key}
-          onClick={choose(item)}
+          className="max-md:text-[16px]"
+          disabled={slot.shouldSpin}
+          onClick={reset}
+        >
+          Reiniciar
+        </button>
+        <button
+          className="max-md:text-[16px]"
+          onClick={spin}
           disabled={slot.shouldSpin}
         >
-          {item}
+          Girar
         </button>
-      ))}
-      <button
-        className="ml-6 min-w-[76px]"
-        onClick={spin}
-        disabled={slot.shouldSpin}
-      >
-        Girar
-      </button>
-      <button
-        className="min-w-[76px]"
-        disabled={slot.shouldSpin}
-        onClick={reset}
-      >
-        Reiniciar
-      </button>
-    </div>
+      </div>
+    </>
   )
 }
 

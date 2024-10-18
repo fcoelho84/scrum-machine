@@ -1,9 +1,10 @@
 import { env } from '~/env'
 import { type RoomSchema, type Room } from 'party/types'
 import { v4 } from 'uuid'
-import { type z } from 'zod'
+import { z, ZodError } from 'zod'
 import { type VoteSchema, type CreateRoomSchema } from './types'
-import { shuffleSlotValues } from '~/utils/slot'
+import { removeShuffleIcons, shuffleSlotValues } from '~/utils/slot'
+import Error from 'next/error'
 
 export const find = async (roomId: string): Promise<Room> => {
   return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${roomId}`, {
@@ -45,10 +46,18 @@ export const update = async (
   }).then((response) => response.json())
 }
 
-export const vote = async (vote: z.infer<typeof VoteSchema>) => {
-  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${vote.roomId}`, {
+export const vote = async (params: z.infer<typeof VoteSchema>) => {
+  const state = await find(params.roomId)
+
+  const validation = z
+    .enum(removeShuffleIcons(state.slot.values) as [string])
+    .parse(params.vote)
+
+  if (!validation) return validation
+
+  return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${params.roomId}`, {
     method: 'PUT',
-    body: JSON.stringify(vote),
+    body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
     },

@@ -16,9 +16,9 @@ export class Connection {
     if (!name || !state || user) return
     const users = state?.users ?? []
     users.push({
-      state: 'idle',
+      state: 'waiting',
       name,
-      point: '0',
+      point: '',
       id: connection.id,
     })
     state.users = users

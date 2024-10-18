@@ -52,14 +52,14 @@ export default function Home() {
   return (
     <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">
       <div className="absolute h-[100vh] max-h-[100vh] w-full rotate-6">
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_16s_infinite_linear] rounded-[36%] bg-secondary opacity-5" />
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_16s_infinite_linear] rounded-[37%] bg-secondary opacity-5" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[36%] bg-secondary opacity-5" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[37%] bg-secondary opacity-5" />
 
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_10s_infinite_linear] rounded-[46%] bg-secondary opacity-5" />
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_10s_infinite_linear] rounded-[57%] bg-secondary opacity-5" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[46%] bg-secondary opacity-5 duration-[10s]" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[57%] bg-secondary opacity-5 duration-[10s]" />
 
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[56%] bg-secondary opacity-5" />
-        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-[rotate_12s_infinite_linear] rounded-[67%] bg-secondary opacity-5" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[56%] bg-secondary opacity-5 duration-[12s]" />
+        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[67%] bg-secondary opacity-5 duration-[12s]" />
       </div>
       <Modal open={open} onClose={toggleOpen}>
         <div className="m-6 flex h-[320px] w-[420px] flex-col items-center justify-center gap-4">

@@ -1,60 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './keyframes.css';
-
-.shine[data-active='false'] {
-  @apply text-highlight/35 blur-[4px];
-}
-
-.shine[data-active='false'] > .flicker-slow {
-  @apply text-highlight/25;
-}
-
-.shine[data-active='false'] > .flicker {
-  @apply text-highlight/10;
-}
-
-.shine[data-active='true'] {
-  animation-name: shine;
-  animation-duration: 400ms;
-  animation-direction: alternate-reverse;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-out;
-}
-
-.shine[data-active='true'] > .flicker {
-  animation-name: flicker;
-  animation-duration: 8s;
-  animation-direction: alternate-reverse;
-  animation-iteration-count: infinite;
-}
-
-.flicker-fast {
-  animation-name: flicker;
-  animation-duration: 6s;
-  animation-direction: alternate-reverse;
-  animation-iteration-count: infinite;
-}
-
-.shine[data-active='true'] > .flicker-slow {
-  animation-name: flicker;
-  animation-duration: 12s;
-  animation-direction: alternate-reverse;
-  animation-iteration-count: infinite;
-}
-
-#slot[data-spin='true'] {
-  transform: translateY(0px);
-  animation-name: slot-spin;
-  animation-duration: 2s;
-  animation-direction: normal;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
-}
 
 button {
-  @apply w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold text-white transition-all hover:brightness-75 active:brightness-50;
+  @apply min-w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold text-white transition-all hover:brightness-75 active:brightness-50;
 }
 
 input {

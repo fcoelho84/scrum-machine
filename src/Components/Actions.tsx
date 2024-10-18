@@ -22,7 +22,7 @@ const Actions = () => {
   }
 
   return (
-    <div className="z-30 w-full">
+    <div className="absolute left-1 top-1 z-30">
       <button data-type="text" className="m-0" onClick={share}>
         <CiShare1 />
       </button>

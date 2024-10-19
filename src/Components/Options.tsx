@@ -2,11 +2,14 @@ import { type Room } from 'party/types'
 import { useEffect, useState } from 'react'
 import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'
+import { useSlotContext } from './SlotMachine/context'
+import { removeShuffleIcons } from '~/utils/slot'
 
 const Options = (slot: Room['slot']) => {
   const [point, setPoint] = useState('')
   const socket = useSocket()
   const vote = api.room.vote.useMutation()
+  const context = useSlotContext()
 
   useEffect(() => {
     if (slot.shouldSpin) {
@@ -15,6 +18,7 @@ const Options = (slot: Room['slot']) => {
   }, [slot])
 
   const spin = () => {
+    context.setAnimationEnd(false)
     socket.send({
       type: 'slot-machine-state',
       data: {
@@ -50,18 +54,14 @@ const Options = (slot: Room['slot']) => {
     })
   }
 
-  const parsedValues = (slot?.values ?? []).filter(
-    (value) => !isNaN(parseInt(value))
-  )
-
   return (
     <>
       <div className="z-10 w-full overflow-hidden">
         <div className="flex gap-2 overflow-x-auto md:justify-center">
-          {(parsedValues ?? []).map((item, key) => (
+          {removeShuffleIcons(slot?.values ?? []).map((item, key) => (
             <button
               data-active={point === item}
-              className="min-w-[5vw] data-[active=true]:brightness-50 max-md:min-w-fit max-md:text-[16px]"
+              className="min-w-[65px] data-[active=true]:brightness-50 max-md:text-[16px] md:min-w-[98px]"
               key={key}
               onClick={choose(item)}
               disabled={slot.shouldSpin}

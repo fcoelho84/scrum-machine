@@ -3,11 +3,14 @@ import { type Config } from 'tailwindcss'
 export default {
   content: ['./src/**/*.tsx'],
   theme: {
+    fontFamily: {
+      pixelify: ['Pixelify Sans', 'Sans'],
+    },
     extend: {
       animation: {
         flicker: 'flicker 8s ease-in-out infinite alternate-reverse',
         shine: 'shine 400ms ease-out infinite alternate-reverse',
-        spin: 'spin 2.5s ease-in-out forwards',
+        spin: 'spin 1.5s ease-in-out forwards',
         rotate: 'rotate 16s infinite linear',
       },
       keyframes: {

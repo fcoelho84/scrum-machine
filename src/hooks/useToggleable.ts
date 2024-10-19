@@ -7,12 +7,10 @@ import {
 
 type ToggleableFunction = () => void
 
-export const useToggleable = (): [
-  boolean,
-  ToggleableFunction,
-  Dispatch<SetStateAction<boolean>>,
-] => {
-  const [toggle, setToggle] = useState(false)
+export const useToggleable = (
+  iniitialValue = false
+): [boolean, ToggleableFunction, Dispatch<SetStateAction<boolean>>] => {
+  const [toggle, setToggle] = useState(iniitialValue)
   const handleToggle = useCallback(() => setToggle((state) => !state), [])
   return [toggle, handleToggle, setToggle]
 }

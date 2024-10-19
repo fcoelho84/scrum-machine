@@ -1,7 +1,7 @@
 import { useParams } from 'next/navigation'
 import { type Room } from 'party/types'
 import { useEffect, useMemo, useState } from 'react'
-import Actions from '~/Components/Actions'
+import Config from '~/Components/Config'
 import JackpotLogo from '~/Components/Jackpot'
 import Options from '~/Components/Options'
 import SlotMachine from '~/Components/SlotMachine'
@@ -30,7 +30,7 @@ const Room = () => {
 
   return (
     <div className="flex min-h-[100vh] w-full flex-col items-center justify-center gap-6 bg-primary p-6">
-      <Actions />
+      <Config />
       <JackpotLogo {...room} />
       <SlotMachine {...room} />
       <Options {...room.slot} />

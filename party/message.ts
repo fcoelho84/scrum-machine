@@ -8,7 +8,6 @@ import {
   type Room,
 } from './types'
 import { pack, unpack } from 'msgpackr'
-import { stat } from 'fs'
 
 export class Message {
   constructor(
@@ -34,6 +33,7 @@ export class Message {
     if (!handler || !state) return
     const room = handler(parsedMessage.data, state)
     const newState = await this.shouldRevealVotes(room)
+
     this.storageService.save(newState)
     this.broadcast(newState)
   }
@@ -53,13 +53,16 @@ export class Message {
   }
 
   private updateSlotState(data: SlotStateUpdate['data'], state: Room) {
-    state.slot.shouldSpin = data.shouldSpin
+    state.slot = {
+      ...state.slot,
+      ...data,
+    }
 
     if (state.slot.shouldSpin) {
-      state.users = state.users.map((user) => {
-        user.state = 'voted'
-        return user
-      })
+      state.users = state.users.map((user) => ({
+        ...user,
+        state: 'voted',
+      }))
     }
     return state
   }

@@ -39,7 +39,8 @@ export type UserUpdateBulk = {
 export type SlotStateUpdate = {
   type: 'slot-machine-state'
   data: {
-    shouldSpin: boolean
+    shouldSpin?: boolean
+    values?: string[]
   }
 }
 

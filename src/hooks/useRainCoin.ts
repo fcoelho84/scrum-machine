@@ -10,7 +10,7 @@ interface Money {
   direction: number
 }
 
-export const useJackpot = () => {
+export const useRainCoin = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const fallingMoney = useRef<Money[]>([])
   const intervalRef = useRef<NodeJS.Timeout | null>(null)

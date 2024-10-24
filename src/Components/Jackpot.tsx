@@ -1,13 +1,13 @@
 import { type Room } from 'party/types'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAudio } from '~/hooks/useAudio'
-import { useJackpot } from '~/hooks/useJackpot'
+import { useRainCoin } from '~/hooks/useRainCoin'
 import { useSlotContext } from './SlotMachine/context'
 import { mostRepeatedNumber } from '~/utils/numbers'
 
 const Jackpot = (props: Room) => {
   const [shouldAnimate, setShouldAnimate] = useState(false)
-  const { canvasRef, initAnimation } = useJackpot()
+  const { canvasRef, initAnimation } = useRainCoin()
   const sound = useAudio('/jackpot.mp3')
   const context = useSlotContext()
 
@@ -57,7 +57,7 @@ const Jackpot = (props: Room) => {
   return (
     <>
       <span
-        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-highlight/35 data-[jackpot=false]:blur-[4px] max-sm:hidden"
+        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-highlight/35 max-sm:hidden"
         data-jackpot={shouldAnimate}
       >
         <span className="animate-flicker text-[5vw]">JA</span>

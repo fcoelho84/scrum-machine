@@ -1,62 +1,79 @@
 import { type Room } from 'party/types'
-import { memo, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAudio } from '~/hooks/useAudio'
 import { useJackpot } from '~/hooks/useJackpot'
 import { useSlotContext } from './SlotMachine/context'
+import { mostRepeatedNumber } from '~/utils/numbers'
 
 const Jackpot = (props: Room) => {
-  const [jackpot, setJackpot] = useState(false)
+  const [shouldAnimate, setShouldAnimate] = useState(false)
   const { canvasRef, initAnimation } = useJackpot()
   const sound = useAudio('/jackpot.mp3')
   const context = useSlotContext()
 
-  useEffect(() => {
-    console.log(context.animationEnd)
-    if (
-      props.users.length === 1 ||
-      !props.slot.shouldSpin ||
-      !context.animationEnd
-    )
-      return
-
-    const values = new Set(props.users.map((user) => user.point))
-    const states = props.users
-      .filter(({ state, point }) => state === 'idle' || point != '')
-      .map((user) => user.state)
-
-    const jackpot = values.size === 1 && states.length === props.users.length
-    setJackpot(jackpot)
-    if (!jackpot) return
-    initAnimation()
+  const initSound = useCallback(() => {
     sound.loop = false
     sound.play()
     sound.volume = 0.2
+  }, [sound])
+
+  const isJackpot = useMemo(() => {
+    const votes =
+      props.users
+        .filter(({ state, point }) => state === 'idle' && point != '')
+        .map((user) => user.point) ?? []
+
+    return (
+      new Set(votes).size === 1 &&
+      votes.length === props.users.length &&
+      props.users.length > 1
+    )
+  }, [props.users])
+
+  const repeatedNumber = useMemo(() => {
+    const users = props.users ?? []
+
+    if (users.find((user) => user.state !== 'idle')) return '🤔'
+
+    return mostRepeatedNumber(users.map(({ point }) => point))
+  }, [props.users])
+
+  const handleInteractions = useCallback(() => {
+    initAnimation()
+    initSound()
+  }, [initAnimation, initSound])
+
+  useEffect(() => {
+    setShouldAnimate(isJackpot && context.animationEnd)
+    if (!props.slot.shouldSpin || !context.animationEnd || !isJackpot) return
+    handleInteractions()
   }, [
     context.animationEnd,
-    initAnimation,
+    handleInteractions,
+    isJackpot,
     props.slot.shouldSpin,
-    props.users,
-    sound,
   ])
 
   return (
     <>
+      <span
+        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-highlight/35 data-[jackpot=false]:blur-[4px] max-sm:hidden"
+        data-jackpot={shouldAnimate}
+      >
+        <span className="animate-flicker text-[5vw]">JA</span>
+        <span className="text-[5vw]">C</span>
+        <span className="text-[5vw]">K</span>
+        <span className="animate-flicker text-[5vw]">P</span>
+        <span className="text-[5vw]">OT</span>
+        <span className="animate-flicker px-4 text-[5vw]">-</span>
+        <span className="text-[5vw]">{repeatedNumber}</span>
+      </span>
       <canvas
         ref={canvasRef}
         className="absolute h-full w-full"
         width={800}
         height={800}
       />
-      <span
-        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-all data-[jackpot=true]:animate-shine data-[jackpot=false]:text-highlight/35 data-[jackpot=false]:blur-[4px] max-sm:hidden"
-        data-jackpot={jackpot}
-      >
-        <span className="animate-flicker text-[5vw]">JA</span>
-        <span className="animate-flicker text-[5vw] duration-[6s]">C</span>
-        <span className="animate-flicker text-[5vw]">K</span>
-        <span className="animate-flicker text-[5vw] duration-[12s]">P</span>
-        <span className="animate-flicker text-[5vw] duration-[6s]">OT</span>
-      </span>
     </>
   )
 }

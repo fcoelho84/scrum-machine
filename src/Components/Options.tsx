@@ -8,7 +8,7 @@ import { removeShuffleIcons } from '~/utils/slot'
 const Options = (slot: Room['slot']) => {
   const [point, setPoint] = useState('')
   const socket = useSocket()
-  const vote = api.room.vote.useMutation()
+  const { mutateAsync } = api.room.vote.useMutation()
   const context = useSlotContext()
 
   useEffect(() => {
@@ -36,22 +36,30 @@ const Options = (slot: Room['slot']) => {
     })
   }
 
-  const choose = (point: string) => async () => {
-    setPoint(point)
+  const updateUserVote = async (value: string) => {
+    if (!socket.roomId) return
+    await mutateAsync({
+      id: socket.id,
+      vote: value,
+      roomId: socket.roomId,
+    })
+  }
+
+  const updateSocketUserState = (value: string) => {
     socket.send({
       type: 'user-update',
       data: {
-        state: 'voted',
+        state: value === point ? 'waiting' : 'voted',
         id: socket.id,
         point: '🤫',
       },
     })
-    if (!socket.roomId) return
-    await vote.mutateAsync({
-      id: socket.id,
-      vote: point,
-      roomId: socket.roomId,
-    })
+  }
+
+  const onClick = (value: string) => async () => {
+    setPoint((vote) => (vote === value ? '' : value))
+    updateSocketUserState(value)
+    updateUserVote(value)
   }
 
   return (
@@ -63,7 +71,7 @@ const Options = (slot: Room['slot']) => {
               data-active={point === item}
               className="min-w-[65px] data-[active=true]:brightness-50 max-md:text-[16px] md:min-w-[98px]"
               key={key}
-              onClick={choose(item)}
+              onClick={onClick(item)}
               disabled={slot.shouldSpin}
             >
               {item}

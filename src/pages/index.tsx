@@ -52,34 +52,42 @@ export default function Home() {
   return (
     <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">
       <div className="absolute h-[100vh] max-h-[100vh] w-full rotate-6">
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[36%] bg-secondary opacity-5" />
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[37%] bg-secondary opacity-5" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[36%] bg-secondary opacity-5" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[37%] bg-secondary opacity-5" />
 
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[46%] bg-secondary opacity-5 duration-[10s]" />
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[57%] bg-secondary opacity-5 duration-[10s]" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[46%] bg-secondary opacity-5 duration-[10s]" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[57%] bg-secondary opacity-5 duration-[10s]" />
 
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[56%] bg-secondary opacity-5 duration-[12s]" />
-        <div className="animate-rotate absolute left-[600px] top-0 h-[2300px] w-[3500px] rounded-[67%] bg-secondary opacity-5 duration-[12s]" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[56%] bg-secondary opacity-5 duration-[12s]" />
+        <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[67%] bg-secondary opacity-5 duration-[12s]" />
       </div>
       <Modal open={open} onClose={toggleOpen}>
-        <div className="m-6 flex h-[320px] w-[420px] flex-col items-center justify-center gap-4">
-          <input
-            onChange={(event) => setName(event.currentTarget.value)}
-            placeholder="escolha um nome"
-            id="input-ref"
-          />
-          <button
-            className="mb-2 w-full max-w-[300px] text-[1rem]"
-            disabled={name.length < 3}
-            onClick={handle}
-          >
-            Entrar
-          </button>
-        </div>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            handle()
+          }}
+        >
+          <div className="flex h-[320px] w-full max-w-[420px] flex-col items-center justify-center gap-6 p-6">
+            <input
+              onChange={(event) => setName(event.currentTarget.value)}
+              placeholder="escolha um nome"
+              className="w-full max-w-[300px]"
+              id="input-ref"
+            />
+            <button
+              type="submit"
+              className="w-full max-w-[300px] text-[1rem]"
+              disabled={name.length < 3}
+            >
+              Entrar
+            </button>
+          </div>
+        </form>
       </Modal>
 
-      <div className="relative ml-[92px] mt-[148px] flex max-w-[500px] flex-col items-center max-sm:ml-0 max-sm:mt-[120px]">
-        <h1 className="mb-[150px] block text-center text-8xl text-highlight max-sm:text-6xl ">
+      <div className="relative ml-[92px] mt-[148px] flex max-w-[500px] flex-col items-center px-4 max-sm:ml-0 max-sm:mt-[120px]">
+        <h1 className="mb-[150px] block text-center text-8xl text-highlight max-sm:text-5xl">
           <span className="flicker-fast">scr</span>
           <span>um mach</span>
           <span className="flicker-fast">ine</span>

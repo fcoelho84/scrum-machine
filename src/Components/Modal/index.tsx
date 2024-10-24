@@ -9,8 +9,8 @@ interface Modal {
 const Modal = (props: PropsWithChildren<Modal>) => {
   if (!props.open) return <></>
   return (
-    <div className="absolute z-50 flex h-[100vh] w-full items-center justify-center bg-primary/90">
-      <div className="z-60 relative overflow-hidden  rounded-lg border border-solid border-secondary bg-primary shadow-md shadow-secondary">
+    <div className="absolute z-50 flex h-[100vh] w-full items-center justify-center overflow-hidden bg-primary/90 max-sm:m-4 max-sm:max-w-[calc(100%-32px)]">
+      <div className="z-60 relative overflow-hidden rounded-lg border border-solid border-secondary bg-primary shadow-md shadow-secondary">
         <BiX
           onClick={props.onClose}
           className="absolute right-4 top-4 cursor-pointer text-blueGray"

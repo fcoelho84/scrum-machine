@@ -1,31 +1,8 @@
 import { type ChangeEvent } from 'react'
 import { useSocket } from '~/hooks/useSocket'
-import { shuffleSlotValues } from '~/utils/slot'
+import { options, shuffleSlotValues } from '~/utils/slot'
 import Ticket from './Ticket'
 import { useAudioContext } from '~/hooks/useAudio'
-
-const options = [
-  [
-    '0',
-    '0.5',
-    '1',
-    '2',
-    '3',
-    '5',
-    '8',
-    '13',
-    '20',
-    '40',
-    '100',
-    'ꝏ',
-    '🤷🏻',
-    '☕',
-  ],
-  ['0', '0.5', '1', '2', '3', '5', '8', '13', '20', '🤷🏻', '☕'],
-  ['0', '0.5', '1', '2', '3', '5', '8', '13', '20', '40', '100', 'ꝏ'],
-  ['0', '0.5', '1', '2', '3', '5', '8', '13', '20'],
-  ['🤬', '💅', '🫦', '🖕🏻', '🛀🏼', '🦍', '🤌🏼', '🍻', '🚭', '👌🏼'],
-]
 
 const Config = () => {
   const audioContext = useAudioContext()

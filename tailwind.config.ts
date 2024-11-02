@@ -2,10 +2,55 @@ import { type Config } from 'tailwindcss'
 
 export default {
   content: ['./src/**/*.tsx'],
+  daisyui: {
+    themes: [
+      'light',
+      'dark',
+      'cupcake',
+      'bumblebee',
+      'emerald',
+      'corporate',
+      'synthwave',
+      'retro',
+      'cyberpunk',
+      'valentine',
+      'halloween',
+      'garden',
+      'forest',
+      'aqua',
+      'lofi',
+      'pastel',
+      'fantasy',
+      'wireframe',
+      'black',
+      'luxury',
+      'dracula',
+      'cmyk',
+      'autumn',
+      'business',
+      'acid',
+      'lemonade',
+      'night',
+      'coffee',
+      'winter',
+      'dim',
+      'nord',
+      'sunset',
+      {
+        default: {
+          primary: '#04c3c3',
+          'primary-content': '#FFFFFF',
+          secondary: '#14194c',
+          'secondary-content': '#E0E0E0',
+          accent: '#ba735e',
+          'accent-content': '#F5F5DC',
+          neutral: '#E0E0E0',
+          'base-100': '#030410',
+        },
+      },
+    ],
+  },
   theme: {
-    fontFamily: {
-      pixelify: ['Pixelify Sans', 'Sans'],
-    },
     extend: {
       animation: {
         flicker: 'flicker 8s ease-in-out infinite alternate-reverse',
@@ -49,16 +94,12 @@ export default {
         },
         shine: {
           '0%': {
-            borderColor: '#14194cF2',
-            color: '#04c3c3BF',
-            textShadow: '0px 0px 8px #04c3c3BF',
-            boxShadow: '0px 2px 16px #14194cC2',
+            textShadow:
+              '0 0 4px theme("backgroundColor.primary"), 0 0 8px theme("backgroundColor.primary")',
           },
           '100%': {
-            borderColor: '#14194cF2',
-            color: '#04c3c3BF',
-            textShadow: '0px 0px 12px #04c3c3BF',
-            boxShadow: '0px 2px 24px #14194cC2',
+            textShadow:
+              '0 0 12px theme("backgroundColor.primary"), 0 0 16px theme("backgroundColor.primary")',
           },
         },
         rotate: {
@@ -83,16 +124,6 @@ export default {
         },
       },
     },
-    colors: {
-      primary: '#030410',
-      secondary: '#14194c',
-      blueGray: '#3c4f61',
-      brown: '#ba735e',
-      white: '#f3f2f5',
-      gray: '#a6a4b2',
-      highlight: '#04c3c3',
-      transparent: 'transparent',
-    },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 } satisfies Config

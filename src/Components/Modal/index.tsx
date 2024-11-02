@@ -1,5 +1,10 @@
-import { type PropsWithChildren } from 'react'
-import { BiX } from 'react-icons/bi'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
+
+import { useMemo, useState, type PropsWithChildren } from 'react'
+import { initializeSocket } from '~/pages'
+
+import { api } from '~/utils/api'
 
 interface Modal {
   open: boolean
@@ -7,18 +12,67 @@ interface Modal {
 }
 
 const Modal = (props: PropsWithChildren<Modal>) => {
+  const [name, setName] = useState('')
+  const router = useRouter()
+  const createRoom = api.room.createRoom.useMutation()
+  const search = useSearchParams()
+  const roomId = useMemo(() => search.get('roomId'), [search])
+
+  const createAndJoin = async () => {
+    const response = await createRoom.mutateAsync({})
+
+    router.push('/room/' + response.roomId)
+    initializeSocket(response.roomId, name)
+  }
+
+  const join = async (roomId: string) => {
+    if (!roomId) return
+    router.push('/room/' + roomId)
+    initializeSocket(roomId, name)
+  }
+
+  const joinOrCreate = () => {
+    if (roomId) join(roomId)
+    else createAndJoin()
+  }
+
   if (!props.open) return <></>
+
   return (
-    <div className="absolute z-50 flex h-[100vh] w-full items-center justify-center overflow-hidden bg-primary/90 max-sm:m-4 max-sm:max-w-[calc(100%-32px)]">
-      <div className="z-60 relative overflow-hidden rounded-lg border border-solid border-secondary bg-primary shadow-md shadow-secondary">
-        <BiX
-          onClick={props.onClose}
-          className="absolute right-4 top-4 cursor-pointer text-blueGray"
-          size={32}
-        />
-        {props.children}
+    <dialog open={props.open} className="modal bg-neutral-600/20">
+      <div className="modal-box shadow-neutral-950 max-w-[412px] shadow-lg">
+        <label className="form-control w-full">
+          <div className="label w-full">
+            <span className="label-text">Qual o seu nome?</span>
+          </div>
+          <input
+            onChange={(event) => setName(event.currentTarget.value)}
+            type="text"
+            className="input input-bordered input-ghost w-full"
+          />
+        </label>
+        <div className="modal-action">
+          <form
+            method="dialog"
+            onSubmit={(event) => {
+              event.preventDefault()
+              joinOrCreate()
+            }}
+          >
+            <button className="btn btn-ghost mr-2" onClick={props.onClose}>
+              Fechar
+            </button>
+            <button
+              className="btn btn-accent"
+              type="submit"
+              disabled={name.length < 3}
+            >
+              Entrar
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </dialog>
   )
 }
 

@@ -20,6 +20,8 @@ export const RoomSchema = z.object({
 
 export type Room = z.infer<typeof RoomSchema>
 
+export type RoomUser = z.infer<typeof UserSchma>
+
 export type UserUpdate = {
   type: 'user-update'
   data: {

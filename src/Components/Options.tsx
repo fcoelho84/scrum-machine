@@ -4,12 +4,14 @@ import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'
 import { useSlotContext } from './SlotMachine/context'
 import { removeShuffleIcons } from '~/utils/slot'
+import { useVotes } from '~/hooks/useVotes'
 
-const Options = (slot: Room['slot']) => {
+const Options = ({ slot, ...props }: Room) => {
   const [point, setPoint] = useState('')
   const socket = useSocket()
   const { mutateAsync } = api.room.vote.useMutation()
   const context = useSlotContext()
+  const votes = useVotes(props.users)
 
   useEffect(() => {
     if (slot.shouldSpin) {
@@ -69,26 +71,28 @@ const Options = (slot: Room['slot']) => {
           {removeShuffleIcons(slot?.values ?? []).map((item, key) => (
             <button
               data-active={point === item}
-              className="min-w-[65px] data-[active=true]:brightness-50 max-md:text-[16px] md:min-w-[98px]"
+              className="btn btn-accent w-[64px] data-[active=true]:brightness-50"
               key={key}
               onClick={onClick(item)}
-              disabled={slot.shouldSpin}
+              disabled={slot.shouldSpin || votes.isAll('idle')}
             >
               {item}
             </button>
           ))}
         </div>
       </div>
-      <div className="z-10 flex w-full flex-wrap justify-center gap-2 max-md:justify-between">
+      <div className="r z-10 flex w-full flex-wrap items-center justify-center gap-2">
         <button
-          className="max-md:text-[16px]"
+          data-hidden={!votes.isAll('idle')}
+          className="btn btn-accent"
           disabled={slot.shouldSpin}
           onClick={reset}
         >
           Reiniciar
         </button>
         <button
-          className="max-md:text-[16px]"
+          data-hidden={votes.isAll('idle')}
+          className="btn btn-accent"
           onClick={spin}
           disabled={slot.shouldSpin}
         >

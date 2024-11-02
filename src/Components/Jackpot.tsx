@@ -57,7 +57,7 @@ const Jackpot = (props: Room) => {
   return (
     <>
       <span
-        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-highlight/35 max-sm:hidden"
+        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] text-primary transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-primary/35 max-sm:hidden"
         data-jackpot={shouldAnimate}
       >
         <span className="animate-flicker text-[5vw]">JA</span>

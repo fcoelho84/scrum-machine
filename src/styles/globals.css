@@ -2,37 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-input {
-  @apply h-[40px] border-b border-brown bg-transparent  text-blueGray outline-none;
+html {
+  font-family: 'Bungee', sans-serif;
 }
 
-input[type='range'] {
-  @apply h-1 appearance-none border-dashed border-primary;
-}
-
-input[type='range']::-webkit-slider-thumb {
-  @apply h-3 w-3 cursor-ew-resize appearance-none rounded-lg bg-primary;
+*[data-hidden='true'] {
+  @apply hidden;
 }
 
 button {
-  @apply min-w-fit rounded-xl bg-brown px-4 py-2 text-[2rem] font-bold text-white transition-all hover:brightness-75 active:brightness-50;
-}
-
-button:disabled {
-  @apply brightness-50;
-}
-
-button[data-type='text'] {
-  @apply bg-transparent text-gray;
-}
-
-select {
-  @apply bg-transparent py-2 text-sm;
-}
-
-@layer base {
-  html {
-    @apply bg-primary;
-    font-family: 'Bungee', sans-serif;
-  }
+  @apply !text-xl;
 }

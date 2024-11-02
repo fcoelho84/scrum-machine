@@ -8,20 +8,23 @@ import Options from '~/Components/Options'
 import SlotMachine from '~/Components/SlotMachine'
 import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'
+import { socket as socketInstance } from '~/pages'
+import { useRouter } from 'next/router'
 
 const Room = () => {
   const params = useParams<{ page: string }>()
-  const roomId = useMemo(() => {
-    if (!params) return ''
-    return params.page
-  }, [params])
   const [room, onMessage] = useState<Room>()
   const config = useConfigContext()
-  const response = api.room.fetchRoom.useQuery(roomId, {
-    enabled: roomId !== '' && !Boolean(room),
+  const router = useRouter()
+  const response = api.room.fetchRoom.useQuery(params?.page ?? '', {
+    enabled: Boolean(params?.page) && !Boolean(room),
   })
-
   useSocket({ onMessage })
+
+  useEffect(() => {
+    if (socketInstance || !params) return
+    router.push(window.location.origin + `?roomId=${params.page}`)
+  }, [params, router])
 
   useEffect(() => {
     if (!room && response.data) onMessage(response.data)

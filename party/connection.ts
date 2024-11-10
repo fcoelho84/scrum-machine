@@ -1,7 +1,7 @@
 import { type Connection as PartyKitConn } from 'partykit/server'
 import { type Storage } from './storage'
 import {} from './types'
-import { type Message } from './message'
+import { type Message } from './message/message'
 
 export class Connection {
   constructor(

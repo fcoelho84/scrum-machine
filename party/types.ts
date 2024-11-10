@@ -6,7 +6,7 @@ const SlotSchema = z.object({
 })
 
 const UserSchma = z.object({
-  state: z.enum(['waiting', 'voted', 'idle']),
+  state: z.enum(['waiting', 'voted', 'idle', 'spectator']),
   name: z.string(),
   id: z.string(),
   point: z.string(),
@@ -22,28 +22,42 @@ export type Room = z.infer<typeof RoomSchema>
 
 export type RoomUser = z.infer<typeof UserSchma>
 
+export enum MessageTypes {
+  userUpdate = 'user-update',
+  userUpdateBulk = 'user-update-bulk',
+  slotUpdate = 'slot-machine-state',
+}
+
 export type UserUpdate = {
-  type: 'user-update'
+  type: MessageTypes.userUpdate
   data: {
-    state: 'waiting' | 'voted' | 'idle'
+    state: 'waiting' | 'voted' | 'idle' | 'spectator'
     point: string
     id: string
   }
 }
 
 export type UserUpdateBulk = {
-  type: 'user-update-bulk'
+  type: MessageTypes.userUpdateBulk
   data: {
     state: 'waiting' | 'voted' | 'idle'
   }
 }
 
 export type SlotStateUpdate = {
-  type: 'slot-machine-state'
+  type: MessageTypes.slotUpdate
   data: {
     shouldSpin?: boolean
     values?: string[]
   }
 }
 
-export type ParsedMessage = SlotStateUpdate | UserUpdate | UserUpdateBulk
+export type MessageData =
+  | UserUpdate['data']
+  | UserUpdateBulk['data']
+  | SlotStateUpdate['data']
+
+export type ParsedMessage = {
+  type: MessageTypes
+  data: MessageData
+}

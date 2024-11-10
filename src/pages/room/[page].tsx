@@ -1,15 +1,18 @@
 import { useParams } from 'next/navigation'
 import { type Room } from 'party/types'
-import { useEffect, useMemo, useState } from 'react'
-import Config from '~/Components/Config'
-import { useConfigContext } from '~/Components/Config/context'
-import JackpotLogo from '~/Components/Jackpot'
-import Options from '~/Components/Options'
-import SlotMachine from '~/Components/SlotMachine'
+import { useEffect, useState } from 'react'
+
 import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'
 import { socket as socketInstance } from '~/pages'
 import { useRouter } from 'next/router'
+
+import Options from '~/components/Options'
+import SlotMachine from '~/components/SlotMachine'
+import Jackpot from '~/components/Jackpot'
+import RoomConfigDrawer from '~/components/RoomConfigDrawer'
+import { useConfigContext } from '~/components/RoomConfigDrawer/context'
+import Controls from '~/components/Controls'
 
 const Room = () => {
   const params = useParams<{ page: string }>()
@@ -39,12 +42,13 @@ const Room = () => {
       data-theme={config.theme}
       className="flex min-h-[100vh] w-full flex-col items-center justify-center gap-6 p-6"
     >
-      <Config />
-      <JackpotLogo {...room} />
+      <RoomConfigDrawer />
+      <Jackpot {...room} />
       <SlotMachine>
         <SlotMachine.Slot {...room} />
       </SlotMachine>
       <Options {...room} />
+      <Controls {...room} />
     </div>
   )
 }

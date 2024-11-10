@@ -1,7 +1,12 @@
 import { unpack } from 'msgpackr/unpack'
 import { pack } from 'msgpackr/pack'
 import { useRouter } from 'next/router'
-import { type Room, type ParsedMessage } from 'party/types'
+import {
+  type Room,
+  type ParsedMessage,
+  type MessageTypes,
+  type MessageData,
+} from 'party/types'
 import { useEffect, useMemo } from 'react'
 import { socket } from '~/pages'
 
@@ -33,8 +38,13 @@ export const useSocket = (options?: UsePartySocketOptions) => {
     () => ({
       id: socket?.id,
       roomId: socket?.room,
-      send(data: ParsedMessage) {
-        socket?.send(pack(data))
+      send(type: MessageTypes, data: MessageData) {
+        socket?.send(
+          pack({
+            type,
+            data,
+          })
+        )
       },
     }),
     []

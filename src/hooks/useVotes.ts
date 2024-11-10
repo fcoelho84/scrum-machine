@@ -1,11 +1,29 @@
 import { type Room } from 'party/types'
-
-type UserState = Room['users'][0]['state']
+import { useMemo } from 'react'
 
 export const useVotes = (users: Room['users']) => {
-  const onlyState = new Set(users.map((user) => user.state))
+  const userStates = useMemo(
+    () =>
+      new Set(
+        users
+          .filter((user) => user.state !== 'spectator')
+          .map((user) => user.state)
+      ),
+    [users]
+  )
+
+  const isIdle = useMemo(
+    () => userStates.size === 1 && userStates.has('idle'),
+    [userStates]
+  )
+
+  const isVoted = useMemo(
+    () => userStates.size === 1 && userStates.has('voted'),
+    [userStates]
+  )
 
   return {
-    isAll: (state: UserState) => onlyState.size === 1 && onlyState.has(state),
+    isIdle,
+    isVoted,
   }
 }

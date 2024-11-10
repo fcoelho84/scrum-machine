@@ -1,10 +1,10 @@
 import { env } from '~/env'
 import { type RoomSchema, type Room } from 'party/types'
 import { v4 } from 'uuid'
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
 import { type VoteSchema, type CreateRoomSchema } from './types'
 import { removeShuffleIcons, shuffleSlotValues } from '~/utils/slot'
-import Error from 'next/error'
+import { TRPCError } from '@trpc/server'
 
 export const find = async (roomId: string): Promise<Room> => {
   return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${roomId}`, {
@@ -13,6 +13,11 @@ export const find = async (roomId: string): Promise<Room> => {
       revalidate: 0,
     },
   }).then((response) => response.json())
+}
+
+export const count = async (roomId: string): Promise<number> => {
+  const room = await find(roomId)
+  return (room.users ?? []).length
 }
 
 export const create = async (params: z.infer<typeof CreateRoomSchema>) => {
@@ -54,6 +59,15 @@ export const vote = async (params: z.infer<typeof VoteSchema>) => {
     .parse(params.vote)
 
   if (!validation) return validation
+
+  const user = state.users.find((user) => user.id === params.id)
+
+  if (user?.state === 'spectator') {
+    throw new TRPCError({
+      code: 'PRECONDITION_FAILED',
+      message: 'Your vote cannot be updated while you are in spectator mode',
+    })
+  }
 
   return fetch(`${env.NEXT_PUBLIC_PARTYKIT_URL}/party/${params.roomId}`, {
     method: 'PUT',

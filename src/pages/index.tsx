@@ -1,8 +1,7 @@
 import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router'
 import PartySocket from 'partysocket'
 import { useEffect, useMemo } from 'react'
-import Modal from '~/Components/Modal'
+import JoinOrCreateRoomModal from '~/components/JoinOrCreateRoomModal'
 import { env } from '~/env'
 import { useToggleable } from '~/hooks/useToggleable'
 import { api } from '~/utils/api'
@@ -23,10 +22,20 @@ export default function Home() {
   const search = useSearchParams()
   const roomId = useMemo(() => search.get('roomId'), [search])
   const [open, toggleOpen, setToggle] = useToggleable()
+  const count = api.room.roomCount.useQuery(roomId ?? '', {
+    enabled: Boolean(roomId),
+  })
+
+  const maxSizeReached = useMemo(
+    () => (count?.data ?? 0) > env.NEXT_PUBLIC_MAX_CONNECTIONS,
+    [count]
+  )
 
   useEffect(() => {
+    if (!count?.data || maxSizeReached) return
+
     setToggle(Boolean(roomId))
-  }, [roomId, setToggle])
+  }, [roomId, setToggle, count, maxSizeReached])
 
   return (
     <div className="relative h-[100vh] max-h-[100vh] overflow-hidden">
@@ -40,7 +49,7 @@ export default function Home() {
         <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[56%] bg-secondary opacity-5 duration-[12s]" />
         <div className="absolute left-[600px] top-0 h-[2300px] w-[3500px] animate-rotate rounded-[67%] bg-secondary opacity-5 duration-[12s]" />
       </div>
-      <Modal open={open} onClose={toggleOpen} />
+      <JoinOrCreateRoomModal open={open} onClose={toggleOpen} />
 
       <div className="relative ml-[92px] mt-[148px] flex max-w-[500px] flex-col items-center px-4 max-sm:ml-0 max-sm:mt-[120px]">
         <h1 className="mb-[150px] block text-center text-8xl text-primary max-sm:text-5xl">
@@ -52,13 +61,20 @@ export default function Home() {
         <button className="btn btn-accent mb-2" onClick={toggleOpen}>
           Criar uma sala
         </button>
-        <button
-          data-hidden={!roomId}
-          className="btn btn-ghost"
-          onClick={toggleOpen}
+
+        <div
+          className="tooltip"
+          data-tip={maxSizeReached ? 'Sala lotada' : undefined}
         >
-          Entrar
-        </button>
+          <button
+            disabled={!roomId || maxSizeReached}
+            data-hidden={!roomId && maxSizeReached}
+            className="btn btn-ghost"
+            onClick={toggleOpen}
+          >
+            Entrar
+          </button>
+        </div>
       </div>
     </div>
   )

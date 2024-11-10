@@ -11,7 +11,7 @@ interface Modal {
   onClose?: () => void
 }
 
-const Modal = (props: PropsWithChildren<Modal>) => {
+const JoinOrCreateRoomModal = (props: PropsWithChildren<Modal>) => {
   const [name, setName] = useState('')
   const router = useRouter()
   const createRoom = api.room.createRoom.useMutation()
@@ -40,7 +40,7 @@ const Modal = (props: PropsWithChildren<Modal>) => {
 
   return (
     <dialog open={props.open} className="modal bg-neutral-600/20">
-      <div className="modal-box shadow-neutral-950 max-w-[412px] shadow-lg">
+      <div className="modal-box max-w-[412px] shadow-lg shadow-neutral-950">
         <label className="form-control w-full">
           <div className="label w-full">
             <span className="label-text">Qual o seu nome?</span>
@@ -76,4 +76,4 @@ const Modal = (props: PropsWithChildren<Modal>) => {
   )
 }
 
-export default Modal
+export default JoinOrCreateRoomModal

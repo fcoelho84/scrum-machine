@@ -1,9 +1,10 @@
 import type * as Party from 'partykit/server'
 
 import { Storage } from './storage'
-import { Message } from './message'
+import { Message } from './message/message'
 import { Connection } from './connection'
 import { Api } from './api'
+import { env } from '~/env'
 
 export default class Server implements Party.Server {
   storageService
@@ -16,12 +17,12 @@ export default class Server implements Party.Server {
 
   constructor(readonly room: Party.Room) {
     this.storageService = new Storage(room)
+    this.api = new Api(this.storageService)
     this.messageService = new Message(this.storageService, room)
     this.connectionService = new Connection(
       this.storageService,
       this.messageService
     )
-    this.api = new Api(this.storageService)
   }
 
   async onRequest(req: Party.Request) {
@@ -31,7 +32,17 @@ export default class Server implements Party.Server {
   }
 
   async onConnect(connection: Party.Connection) {
-    this.connectionService.login(connection)
+    const room = await this.storageService.fetch()
+
+    if (
+      room &&
+      room?.users.length >
+        parseInt(process?.env?.NEXT_PUBLIC_MAX_CONNECTIONS ?? '14')
+    ) {
+      return this.connectionService.logout(connection)
+    }
+
+    return this.connectionService.login(connection)
   }
 
   async onClose(connection: Party.Connection) {

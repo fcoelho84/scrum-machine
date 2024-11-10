@@ -1,17 +1,17 @@
-import { MessageTypes } from 'party/types'
+import { MessageTypes, type Room } from 'party/types'
 import { useSocket } from '~/hooks/useSocket'
 import { useConfigContext } from '../context'
-import { useSlotContext } from '~/components/SlotMachine/context'
+import { useVotes } from '~/hooks/useVotes'
 
-const SpectatorMode = () => {
+const SpectatorMode = (props: Room) => {
   const socket = useSocket()
   const config = useConfigContext()
-  const slot = useSlotContext()
+  const votes = useVotes(props.users)
   const handle = () => {
     config.toggleSpectatorMode()
     socket.send(MessageTypes.userUpdate, {
       state: config.isSpectator ? 'waiting' : 'spectator',
-      point: '4',
+      point: '',
       id: socket.id,
     })
   }
@@ -21,7 +21,7 @@ const SpectatorMode = () => {
       <label className="mb-1text-primary/85">Modo Espectador:</label>
 
       <input
-        disabled={!slot.animationEnd}
+        disabled={votes.isIdle}
         checked={config.isSpectator}
         type="checkbox"
         className="toggle"

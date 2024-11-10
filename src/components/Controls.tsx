@@ -2,6 +2,7 @@ import { MessageTypes, type Room } from 'party/types'
 import { useSocket } from '~/hooks/useSocket'
 import { useSlotContext } from './SlotMachine/context'
 import { useVotes } from '~/hooks/useVotes'
+import { useMemo } from 'react'
 
 const Controls = ({ slot, ...props }: Room) => {
   const socket = useSocket()
@@ -20,6 +21,16 @@ const Controls = ({ slot, ...props }: Room) => {
       state: 'waiting',
     })
   }
+
+  const imSpectator = useMemo(() => {
+    const user = props.users.find((user) => user.id === socket.id)
+
+    if (!user) return true
+
+    return user.state === 'spectator'
+  }, [props.users, socket.id])
+
+  if (imSpectator) return <></>
 
   return (
     <div className="r z-10 flex w-full flex-wrap items-center justify-center gap-2">

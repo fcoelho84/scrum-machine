@@ -3,8 +3,9 @@ import Values from './Form/Values'
 import Theme from './Form/Theme'
 import { FiMenu, FiX } from 'react-icons/fi'
 import SpectatorMode from './Form/Spectator'
+import { type Room } from 'party/types'
 
-const RoomConfigDrawer = () => {
+const RoomConfigDrawer = (props: Room) => {
   return (
     <div className="drawer absolute left-4 top-4 z-50 h-fit w-fit">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -27,7 +28,7 @@ const RoomConfigDrawer = () => {
           <Volume />
           <Values />
           <Theme />
-          <SpectatorMode />
+          <SpectatorMode {...props} />
         </div>
       </div>
     </div>

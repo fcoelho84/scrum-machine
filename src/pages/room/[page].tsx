@@ -42,7 +42,7 @@ const Room = () => {
       data-theme={config.theme}
       className="flex min-h-[100vh] w-full flex-col items-center justify-center gap-6 p-6"
     >
-      <RoomConfigDrawer />
+      <RoomConfigDrawer {...room} />
       <Jackpot {...room} />
       <SlotMachine>
         <SlotMachine.Slot {...room} />

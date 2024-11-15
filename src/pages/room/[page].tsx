@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { type Room } from 'party/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useSocket } from '~/hooks/useSocket'
 import { api } from '~/utils/api'

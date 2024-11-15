@@ -11,6 +11,11 @@ const Jackpot = (props: Room) => {
   const sound = useAudio('/jackpot.mp3')
   const context = useSlotContext()
 
+  const users = useMemo(
+    () => (props.users ?? []).filter((user) => user.state !== 'spectator'),
+    [props.users]
+  )
+
   const initSound = useCallback(() => {
     sound.loop = false
     sound.play()
@@ -18,25 +23,15 @@ const Jackpot = (props: Room) => {
   }, [sound])
 
   const isJackpot = useMemo(() => {
-    const votes =
-      props.users
-        .filter(({ state, point }) => state === 'idle' && point != '')
-        .map((user) => user.point) ?? []
-
-    return (
-      new Set(votes).size === 1 &&
-      votes.length === props.users.length &&
-      props.users.length > 1
-    )
-  }, [props.users])
+    const votes = new Set(users.map((user) => user.point))
+    return votes.size === 1
+  }, [users])
 
   const repeatedNumber = useMemo(() => {
-    const users = props.users ?? []
-
     if (users.find((user) => user.state !== 'idle')) return '🤔'
 
     return mostRepeatedNumber(users.map(({ point }) => point))
-  }, [props.users])
+  }, [users])
 
   const handleInteractions = useCallback(() => {
     initAnimation()

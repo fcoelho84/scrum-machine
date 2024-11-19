@@ -13,6 +13,7 @@ import Jackpot from '~/components/Jackpot'
 import RoomConfigDrawer from '~/components/RoomConfigDrawer'
 import { useConfigContext } from '~/components/RoomConfigDrawer/context'
 import Controls from '~/components/Controls'
+import { mostRepeatedNumber } from '~/utils/numbers'
 
 const Room = () => {
   const params = useParams<{ page: string }>()
@@ -33,6 +34,17 @@ const Room = () => {
     if (!room && response.data) onMessage(response.data)
   }, [response, room])
 
+  const users = useMemo(
+    () => (room?.users ?? []).filter((user) => user.state !== 'spectator'),
+    [room?.users]
+  )
+
+  const repeatedNumber = useMemo(() => {
+    if (users.find((user) => user.state !== 'idle')) return '🤔'
+
+    return mostRepeatedNumber(users.map(({ point }) => point))
+  }, [users])
+
   if (!room) {
     return <></>
   }
@@ -43,6 +55,14 @@ const Room = () => {
       className="flex min-h-[100vh] w-full flex-col items-center justify-center gap-6 p-6"
     >
       <RoomConfigDrawer {...room} />
+
+      <label
+        className={`swap swap-flip text-6xl ${repeatedNumber === '🤔' ? 'swap-active' : ''}`}
+      >
+        <span className="swap-off text-center">{repeatedNumber}</span>
+        <span className="swap-on text-center">{repeatedNumber}</span>
+      </label>
+
       <Jackpot {...room} />
       <SlotMachine>
         <SlotMachine.Slot {...room} />

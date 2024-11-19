@@ -10,7 +10,11 @@ interface Money {
   direction: number
 }
 
-export const useRainCoin = () => {
+type Params = {
+  onEnd: () => void
+}
+
+export const useRainCoin = (params: Params) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const fallingMoney = useRef<Money[]>([])
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -81,8 +85,11 @@ export const useRainCoin = () => {
 
     intervalRef.current = setInterval(() => draw(canvasContext), 30)
 
-    setTimeout(endAnimation, 5_000)
-  }, [draw, endAnimation])
+    setTimeout(() => {
+      endAnimation()
+      params.onEnd()
+    }, 5_000)
+  }, [draw, endAnimation, params])
 
   return { canvasRef, initAnimation }
 }

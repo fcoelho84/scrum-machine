@@ -3,16 +3,27 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAudio } from '~/hooks/useAudio'
 import { useRainCoin } from '~/hooks/useRainCoin'
 import { useSlotContext } from './SlotMachine/context'
-import { mostRepeatedNumber } from '~/utils/numbers'
+import CountUp from 'react-countup'
+import Lottie from 'lottie-react'
+import jackpot from '../lottie/jackpot.json'
+import coin from '../lottie/coin.json'
+
+enum states {
+  waiting = 'waiting',
+  running = 'running',
+  finished = 'finished',
+}
 
 const Jackpot = (props: Room) => {
-  const [shouldAnimate, setShouldAnimate] = useState(false)
-  const { canvasRef, initAnimation } = useRainCoin()
+  const [animation, setAnimation] = useState<states>(states.waiting)
+  const { canvasRef, initAnimation } = useRainCoin({
+    onEnd: () => setAnimation(states.finished),
+  })
   const sound = useAudio('/jackpot.mp3')
   const context = useSlotContext()
 
   const users = useMemo(
-    () => (props.users ?? []).filter((user) => user.state !== 'spectator'),
+    () => (props.users ?? []).filter((user) => user.state === 'idle'),
     [props.users]
   )
 
@@ -27,42 +38,78 @@ const Jackpot = (props: Room) => {
     return votes.size === 1
   }, [users])
 
-  const repeatedNumber = useMemo(() => {
-    if (users.find((user) => user.state !== 'idle')) return '🤔'
-
-    return mostRepeatedNumber(users.map(({ point }) => point))
-  }, [users])
-
   const handleInteractions = useCallback(() => {
     initAnimation()
     initSound()
   }, [initAnimation, initSound])
 
   useEffect(() => {
-    setShouldAnimate(isJackpot && context.animationEnd)
-    if (!props.slot.shouldSpin || !context.animationEnd || !isJackpot) return
-    handleInteractions()
+    if (props.slot.shouldSpin || users.length === 0) {
+      setAnimation(states.waiting)
+    }
+  }, [props.slot.shouldSpin, users.length])
+
+  useEffect(() => {
+    if (animation === states.finished) return
+    if (!isJackpot || !context.animationEnd) return
+
+    setAnimation(states.running)
+    initAnimation()
+    initSound()
   }, [
+    animation,
     context.animationEnd,
     handleInteractions,
+    initAnimation,
+    initSound,
     isJackpot,
-    props.slot.shouldSpin,
   ])
 
   return (
     <>
-      <span
-        className="relative rounded-xl border-[4px] border-solid border-secondary/55 px-[2vw] py-[0.5vw] text-primary transition-colors data-[jackpot=true]:animate-shine data-[jackpot=false]:text-primary/35 max-sm:hidden"
-        data-jackpot={shouldAnimate}
+      {animation === states.running && (
+        <>
+          <Lottie
+            animationData={jackpot}
+            autoplay={true}
+            loop={false}
+            className="absolute bottom-24 z-20 scale-y-[300%] md:bottom-0 md:scale-y-100"
+          />
+          <Lottie
+            animationData={coin}
+            autoplay={true}
+            loop={false}
+            className="absolute bottom-0 left-12 z-20"
+          />
+          <Lottie
+            animationData={coin}
+            autoplay={true}
+            loop={false}
+            className="absolute bottom-0 right-12 z-20"
+          />
+        </>
+      )}
+
+      <div
+        style={{
+          animationDelay: '0.4s',
+        }}
+        data-animate={animation === states.running}
+        className="absolute z-20 flex w-[20px] scale-0 flex-col items-center justify-center rounded-full bg-black/25 p-4 data-[animate=true]:animate-scale-up"
       >
-        <span className="animate-flicker text-[5vw]">JA</span>
-        <span className="text-[5vw]">C</span>
-        <span className="text-[5vw]">K</span>
-        <span className="animate-flicker text-[5vw]">P</span>
-        <span className="text-[5vw]">OT</span>
-        <span className="animate-flicker px-4 text-[5vw]">-</span>
-        <span className="text-[5vw]">{repeatedNumber}</span>
-      </span>
+        <div className="z-15 absolute h-40 w-40 rotate-45 animate-shine rounded-3xl bg-secondary md:h-80 md:w-80" />
+        <span className="animate-scale-up-down text-5xl text-primary md:text-9xl">
+          <span className="animate-shine-text">JACKPOT</span>
+        </span>
+        {animation === states.running && (
+          <CountUp
+            className="text-1xl z-20 w-fit scale-0 animate-scale-up text-center delay-1000 md:text-3xl"
+            end={9923495661}
+            duration={5}
+            prefix="R$ "
+          />
+        )}
+      </div>
       <canvas
         ref={canvasRef}
         className="absolute h-full w-full"

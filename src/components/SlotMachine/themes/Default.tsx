@@ -4,7 +4,7 @@ import { FaPlay } from 'react-icons/fa'
 
 const Default = (props: PropsWithChildren) => {
   return (
-    <div className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2">
+    <div className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2 rounded-lg border-primary lg:border-2">
       <div className="absolute z-10 flex min-w-full flex-row items-center max-lg:hidden">
         <FaPlay className="absolute translate-x-[-6px] text-primary" />
         <div className="h-[2px] w-full bg-primary blur-[1px]" />

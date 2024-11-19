@@ -53,12 +53,39 @@ export default {
   theme: {
     extend: {
       animation: {
+        'glow-bounce': 'glowBounce 1s ease-in-out infinite',
+        'scale-up': 'scaleUp 1s ease-in-out forwards',
+        'scale-up-down': 'scaleUpDown 1s ease-in-out infinite',
         flicker: 'flicker 8s ease-in-out infinite alternate-reverse',
         shine: 'shine 400ms ease-out infinite alternate-reverse',
+        'shine-text': 'shine-text 400ms ease-out infinite alternate-reverse',
         spin: 'spin 1.5s ease-in-out forwards',
         rotate: 'rotate 16s infinite linear',
       },
       keyframes: {
+        glowBounce: {
+          '0%, 100%': {
+            transform: 'scaleY(0.9)',
+            textShadow: '0 0 80px theme("backgroundColor.primary")',
+          },
+          '50%': {
+            transform: 'scaleY(1)',
+            textShadow: '0 0 100px theme("backgroundColor.primary")',
+          },
+        },
+        scaleUp: {
+          '0%': {
+            transform: 'scale(0)',
+          },
+          '60%': { transform: 'scale(1.2)' },
+          '85%': { transform: 'scale(0.8)' },
+          '95%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        scaleUpDown: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+        },
         flicker: {
           '0%': { opacity: '1' },
           '4%': { opacity: '0.9' },
@@ -93,6 +120,16 @@ export default {
           '100%': { opacity: '1' },
         },
         shine: {
+          '0%': {
+            boxShadow:
+              '0 0 4px theme("backgroundColor.secondary"), 0 0 8px theme("backgroundColor.secondary")',
+          },
+          '100%': {
+            boxShadow:
+              '0 0 12px theme("backgroundColor.secondary"), 0 0 16px theme("backgroundColor.secondary")',
+          },
+        },
+        'shine-text': {
           '0%': {
             textShadow:
               '0 0 4px theme("backgroundColor.primary"), 0 0 8px theme("backgroundColor.primary")',

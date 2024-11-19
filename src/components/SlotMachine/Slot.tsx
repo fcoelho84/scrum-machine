@@ -60,6 +60,21 @@ const Slot = (props: Room) => {
     [props.slot.shouldSpin, props.slot.values]
   )
 
+  const shouldAnimte = useCallback(
+    (user: RoomUser, index: number) => {
+      if (user?.state !== 'idle') return false
+
+      const value = user.point ?? null
+      const neighborPrev = props.users[index - 1]?.point ?? null
+      const neighborNext = props.users[index + 1]?.point ?? null
+
+      const hasNeighborEqual = value === neighborPrev || value === neighborNext
+
+      return hasNeighborEqual && value !== null
+    },
+    [props.users]
+  )
+
   const users = useMemo(
     () => (props.users ?? []).filter((user) => user.state !== 'spectator'),
     [props.users]
@@ -79,14 +94,17 @@ const Slot = (props: Room) => {
             className="z-10 flex h-full w-full translate-x-0 flex-col items-center justify-center data-[spin=true]:animate-spin"
             onAnimationEnd={onAnimationEnd(user.id)}
             onAnimationStart={onAnimationStart}
-            style={{ animationDelay: index * 200 + 'ms' }}
+            style={{ animationDelay: index * 500 + 'ms' }}
           >
-            {getValues(user).map((item, index) => (
+            {getValues(user).map((item, key) => (
               <div
-                key={index}
+                key={key}
                 className="flex h-[208px] items-center justify-center"
               >
-                <span className="min-w-[112px] text-center text-[62px] font-semibold text-primary">
+                <span
+                  data-animate={shouldAnimte(user, index)}
+                  className="data-[animate=true]:animate-glow-bounce min-w-[112px] text-center text-[62px] font-semibold text-primary"
+                >
                   {item}
                 </span>
               </div>

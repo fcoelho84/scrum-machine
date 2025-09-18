@@ -1,18 +1,19 @@
 import { MessageTypes, type Room } from 'party/types'
-import { useSocket } from '~/hooks/useSocket'
 import { useConfigContext } from '../context'
 import { useVotes } from '~/hooks/useVotes'
+import { useSocketMessage, useSocketSendMessage } from '~/hooks/useSocket'
 
-const SpectatorMode = (props: Room) => {
-  const socket = useSocket()
+const SpectatorMode = () => {
+  const sendMessage = useSocketSendMessage()
   const config = useConfigContext()
-  const votes = useVotes(props.users)
+  const users = useSocketMessage<Room['users']>((state) => state?.users)
+  const votes = useVotes(users)
+
   const handle = () => {
     config.toggleSpectatorMode()
-    socket.send(MessageTypes.userUpdate, {
+    sendMessage(MessageTypes.userUpdate, {
       state: config.isSpectator ? 'waiting' : 'spectator',
       point: '',
-      id: socket.id,
     })
   }
 

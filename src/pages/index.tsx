@@ -1,22 +1,10 @@
 import { useSearchParams } from 'next/navigation'
-import PartySocket from 'partysocket'
 import { type FC, useEffect, useMemo } from 'react'
-import JoinOrCreateRoomModal from '~/components/JoinOrCreateRoomModal'
+import JoinRoomModal from '~/components/JoinRoomModal'
 import { env } from '~/env'
 import { useToggleable } from '~/hooks/useToggleable'
 import { api } from '~/utils/api'
-
-export let socket: PartySocket
-
-export const initializeSocket = (room: string, name: string) => {
-  socket = new PartySocket({
-    query: {
-      name,
-    },
-    host: env.NEXT_PUBLIC_PARTYKIT_URL,
-    room,
-  })
-}
+import BackgroundPage from '~/components/BackgroundPage'
 
 const Card: FC<{
   icon: string
@@ -77,10 +65,8 @@ const Home: FC = () => {
   }, [roomId, setToggle, count, maxSizeReached])
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(4,195,195,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(4,195,195,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-
-      <JoinOrCreateRoomModal open={open} onClose={toggleOpen} />
+    <BackgroundPage>
+      <JoinRoomModal open={open} onClose={toggleOpen} />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-20">
         <div className="mb-16 text-center">
@@ -161,7 +147,7 @@ const Home: FC = () => {
           />
         </div>
       </div>
-    </div>
+    </BackgroundPage>
   )
 }
 

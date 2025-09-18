@@ -1,48 +1,32 @@
 import { MessageTypes, type Room } from 'party/types'
-import { useEffect, useMemo, useState } from 'react'
-import { useSocket } from '~/hooks/useSocket'
-import { api } from '~/utils/api'
+import { useEffect, useState } from 'react'
 import { removeShuffleIcons } from '~/utils/slot'
 import { useVotes } from '~/hooks/useVotes'
-import { useConfigContext } from './RoomConfigDrawer/context'
+import { useSocketMessage, useSocketSendMessage } from '~/hooks/useSocket'
 
-const Options = ({ slot, ...props }: Room) => {
+const Options = () => {
   const [point, setPoint] = useState('')
-  const socket = useSocket()
-  const { mutateAsync } = api.room.vote.useMutation()
-  const config = useConfigContext()
-  const votes = useVotes(props.users)
+  const sendMessage = useSocketSendMessage()
+  const users = useSocketMessage<Room['users']>((state) => state?.users)
+  const slot = useSocketMessage<Room['slot']>((state) => state?.slot)
+  const votes = useVotes(users ?? [])
 
   useEffect(() => {
-    if (slot.shouldSpin) {
-      setPoint('')
-    }
+    if (slot?.shouldSpin) setPoint('')
   }, [slot])
 
-  const saveUserVote = async (value: string) => {
-    if (!socket.roomId) return
-    await mutateAsync({
-      id: socket.id,
-      vote: value,
-      roomId: socket.roomId,
-    })
-  }
-
   const updateUserState = (value: string) => {
-    socket.send(MessageTypes.userUpdate, {
-      state: value === point ? 'waiting' : 'voted',
-      id: socket.id,
-      point: '🤫',
+    if (value === point) return
+    setPoint(value)
+    sendMessage(MessageTypes.userUpdate, {
+      state: 'voted',
+      point: value,
     })
   }
 
   const onClick = (value: string) => async () => {
-    setPoint((vote) => (vote === value ? '' : value))
     updateUserState(value)
-    await saveUserVote(value)
   }
-
-  if (config.isSpectator) return <></>
 
   return (
     <div className="z-10 w-full overflow-hidden">
@@ -53,7 +37,7 @@ const Options = ({ slot, ...props }: Room) => {
             className="btn btn-accent w-[64px] data-[active=true]:brightness-50"
             key={key}
             onClick={onClick(item)}
-            disabled={slot.shouldSpin || votes.isIdle}
+            disabled={slot?.shouldSpin ?? votes.isIdle}
           >
             {item}
           </button>

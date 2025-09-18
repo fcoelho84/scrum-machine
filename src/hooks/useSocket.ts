@@ -1,52 +1,97 @@
 import { unpack } from 'msgpackr/unpack'
 import { pack } from 'msgpackr/pack'
-import { useRouter } from 'next/router'
-import {
-  type Room,
-  type ParsedMessage,
-  type MessageTypes,
-  type MessageData,
-} from 'party/types'
-import { useEffect, useMemo } from 'react'
-import { socket } from '~/pages'
+import { type Room, type MessageTypes, type MessageData } from 'party/types'
+import { useCallback } from 'react'
 
-type UsePartySocketOptions = {
-  onMessage?: (event: Room) => void
+import { create } from 'zustand'
+import PartySocket from 'partysocket'
+import { env } from '~/env'
+
+type State = {
+  message: Room | null
+  socket: PartySocket | null
+  setMessage: (message: Room) => void
+  setSocket: (socket: PartySocket) => void
 }
 
-export const useSocket = (options?: UsePartySocketOptions) => {
-  const router = useRouter()
-  const roomId = useMemo(
-    () => router.query?.page as string | undefined,
-    [router.query?.page]
-  )
+const useSocketInstance = create<State>((set) => ({
+  socket: null,
+  message: null,
+  setSocket: (socket) => set({ socket }),
+  setMessage: (message) => set({ message }),
+}))
 
-  useEffect(() => {
-    if (!socket) return
-    const fn = async (message: MessageEvent) => {
+export const useInitSocket = () => {
+  const socket = useSocketInstance((state) => state.socket)
+  const setMessage = useSocketInstance((state) => state.setMessage)
+  const setSocket = useSocketInstance((state) => state.setSocket)
+
+  const onMessage = useCallback(
+    async (message: MessageEvent) => {
       const parsedMessage = await message.data.arrayBuffer()
       const unpackMessage = unpack(parsedMessage)
-      options?.onMessage && options?.onMessage(unpackMessage)
-    }
-    socket.addEventListener('message', fn)
-    return () => {
-      socket.removeEventListener('message', fn)
-    }
-  }, [roomId, options])
-
-  return useMemo(
-    () => ({
-      id: socket?.id,
-      roomId: socket?.room,
-      send(type: MessageTypes, data: MessageData) {
-        socket?.send(
-          pack({
-            type,
-            data,
-          })
-        )
-      },
-    }),
-    []
+      setMessage(unpackMessage)
+    },
+    [setMessage]
   )
+
+  const initSocket = useCallback(
+    (name: string, room: string) => {
+      if (socket) return socket
+
+      const connection = new PartySocket({
+        query: {
+          name,
+        },
+        host: env.NEXT_PUBLIC_PARTYKIT_URL,
+        room,
+      })
+      connection.addEventListener('message', onMessage)
+      connection.onclose = () => {
+        connection.removeEventListener('message', onMessage)
+      }
+
+      setSocket(connection)
+      return connection
+    },
+    [onMessage, setSocket, socket]
+  )
+
+  return useCallback(
+    (room: string, name: string) => {
+      return new Promise<PartySocket>((resolve) => {
+        resolve(initSocket(name, room))
+      })
+    },
+    [initSocket]
+  )
+}
+
+export const useSocketCurrentUser = () => {
+  const socket = useSocketInstance((state) => state.socket)
+  const message = useSocketInstance((state) => state.message)
+  return message?.users.find((user) => user.id === socket?.id) ?? null
+}
+
+export const useSocketMessage = <T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  selector: (message: Room | null) => any
+): T | null => {
+  return useSocketInstance((state) => selector(state.message))
+}
+
+export const useSocketSendMessage = () => {
+  const socket = useSocketInstance((state) => state.socket)
+
+  return (type: MessageTypes, data: Omit<MessageData, 'id'>) => {
+    socket?.send(
+      pack({
+        type,
+        data: {
+          ...data,
+          id: socket?.id,
+        },
+      })
+    )
+  }
 }

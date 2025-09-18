@@ -4,7 +4,6 @@ import { Storage } from './storage'
 import { Message } from './message/message'
 import { Connection } from './connection'
 import { Api } from './api'
-import { env } from '~/env'
 
 export default class Server implements Party.Server {
   storageService
@@ -29,6 +28,10 @@ export default class Server implements Party.Server {
     if (req.method === 'POST') return this.api.post(req)
     if (req.method === 'PUT') return this.api.put(req)
     return this.api.get()
+  }
+
+  async onReconnect(connection: Party.Connection) {
+    return this.connectionService.login(connection)
   }
 
   async onConnect(connection: Party.Connection) {

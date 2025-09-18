@@ -19,5 +19,6 @@ export const mostRepeatedNumber = (values: string[]) => {
     }
   }
 
+  if (!mostRepeated) return null
   return mostRepeated
 }

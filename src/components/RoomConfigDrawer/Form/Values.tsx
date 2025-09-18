@@ -1,15 +1,15 @@
 import { MessageTypes } from 'party/types'
 import { type ChangeEvent } from 'react'
-import { useSocket } from '~/hooks/useSocket'
 import { options, shuffleSlotValues } from '~/utils/slot'
+import { useSocketSendMessage } from '~/hooks/useSocket'
 
 const Values = () => {
-  const socket = useSocket()
+  const sendMessage = useSocketSendMessage()
 
   const selectValue = (event: ChangeEvent<HTMLSelectElement>) => {
     const index = event.currentTarget.value ?? 0
 
-    socket.send(MessageTypes.slotUpdate, {
+    sendMessage(MessageTypes.slotUpdate, {
       values: shuffleSlotValues(options[parseInt(index)]),
     })
   }

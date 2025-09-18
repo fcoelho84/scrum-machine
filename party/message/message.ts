@@ -1,11 +1,9 @@
-import { type Room as PartyKitRoom } from 'partykit/server'
-import { type Storage } from '../storage'
 import {
-  MessageTypes,
-  type UserUpdateBulk,
-  type ParsedMessage,
-  type Room,
-} from '../types'
+  type Room as PartyKitRoom,
+  type Connection as PartyKitConn,
+} from 'partykit/server'
+import { type Storage } from '../storage'
+import { type ParsedMessage, type Room } from '../types'
 import { pack, unpack } from 'msgpackr'
 import { StrategyFactory } from './strategy.factory'
 
@@ -23,6 +21,12 @@ export class Message {
     this.room.broadcast(pack(room))
   }
 
+  async sendToConnection(connection: PartyKitConn, room: Room | undefined) {
+    if (!room) return
+    connection.send(pack(room))
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async handle(message: any) {
     const currentState = await this.storageService.fetch()
     const parsedMessage = unpack(message) as ParsedMessage

@@ -7,6 +7,7 @@ import CountUp from 'react-countup'
 import Lottie from 'lottie-react'
 import jackpot from '../lottie/jackpot.json'
 import coin from '../lottie/coin.json'
+import { useSocketMessage } from '~/hooks/useSocket'
 
 enum states {
   waiting = 'waiting',
@@ -14,17 +15,16 @@ enum states {
   finished = 'finished',
 }
 
-const Jackpot = (props: Room) => {
+const Jackpot = () => {
   const [animation, setAnimation] = useState<states>(states.waiting)
+  const slot = useSocketMessage<Room['slot']>((state) => state?.slot)
   const { canvasRef, initAnimation } = useRainCoin({
     onEnd: () => setAnimation(states.finished),
   })
   const sound = useAudio('/jackpot.mp3')
   const context = useSlotContext()
-
-  const users = useMemo(
-    () => (props.users ?? []).filter((user) => user.state === 'idle'),
-    [props.users]
+  const users = useSocketMessage<Room['users']>((state) =>
+    state?.users.filter((user) => user.state === 'idle')
   )
 
   const initSound = useCallback(() => {
@@ -44,10 +44,10 @@ const Jackpot = (props: Room) => {
   }, [initAnimation, initSound])
 
   useEffect(() => {
-    if (props.slot.shouldSpin || users.length === 0) {
+    if (slot.shouldSpin || users.length === 0) {
       setAnimation(states.waiting)
     }
-  }, [props.slot.shouldSpin, users.length])
+  }, [slot.shouldSpin, users.length])
 
   useEffect(() => {
     if (animation === states.finished) return

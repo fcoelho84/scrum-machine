@@ -2,7 +2,11 @@ import { MessageTypes, type Room } from 'party/types'
 import { useEffect, useState } from 'react'
 import { removeShuffleIcons } from '~/utils/slot'
 import { useVotes } from '~/hooks/useVotes'
-import { useSocketMessage, useSocketSendMessage } from '~/hooks/useSocket'
+import {
+  useSocketMessage,
+  useSocketSendMessage,
+  useSocketCurrentUser,
+} from '~/hooks/useSocket'
 import { useSlotContext } from '~/pages/room/_Slot'
 
 const Options = () => {
@@ -12,6 +16,7 @@ const Options = () => {
   const slot = useSocketMessage<Room['slot']>((state) => state?.slot)
   const votes = useVotes(users ?? [])
   const context = useSlotContext()
+  const currentUser = useSocketCurrentUser()
 
   useEffect(() => {
     if (slot?.shouldSpin) setPoint('')
@@ -42,6 +47,10 @@ const Options = () => {
       state: 'waiting',
     })
   }
+
+  const isSpectator = currentUser?.state === 'spectator'
+
+  if (isSpectator) return null
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">

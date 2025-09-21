@@ -14,7 +14,9 @@ const Card: FC<{
   return (
     <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-3 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-primary/30 hover:bg-slate-800/70 sm:p-4 md:p-5">
       <div className="mb-2 text-2xl sm:mb-3 sm:text-3xl">{icon}</div>
-      <h3 className="mb-1 text-sm font-semibold text-white sm:mb-2 sm:text-base"> {title} </h3>
+      <h3 className="mb-1 text-sm font-semibold text-white sm:mb-2 sm:text-base">
+        {title}
+      </h3>
       <p className="text-xs text-slate-400 sm:text-sm">{description}</p>
     </div>
   )
@@ -97,16 +99,14 @@ const Home: FC = () => {
 
         <div className="mb-4 flex w-full max-w-md flex-col items-center gap-2 sm:mb-6 sm:max-w-lg sm:gap-3 md:mb-8 md:max-w-2xl md:flex-row md:gap-4 lg:mb-10">
           <button
-            className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2 text-xs font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:px-4 sm:py-2.5 sm:text-sm md:w-auto md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg"
+            className="w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2 text-xs font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:px-4 sm:py-2.5 sm:text-sm md:w-auto md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg"
             onClick={toggleOpen}
           >
-            <span className="relative z-10 flex items-center justify-center gap-1 sm:gap-2">
+            <span className="flex items-center justify-center gap-1 sm:gap-2">
               <span>🚀</span>
               <span className="hidden sm:inline">Criar Nova Sala</span>
               <span className="sm:hidden">Criar Sala</span>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-            <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-primary/50 to-accent/50 opacity-0 blur transition-opacity duration-300 group-hover:opacity-100" />
           </button>
 
           <div
@@ -118,15 +118,14 @@ const Home: FC = () => {
             <button
               disabled={!roomId || maxSizeReached}
               data-hidden={!roomId && maxSizeReached}
-              className="group relative w-full overflow-hidden rounded-xl border-2 border-primary/50 bg-slate-800/50 px-3 py-2 text-xs font-semibold text-primary backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-primary hover:bg-slate-800/70 hover:shadow-xl hover:shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5 sm:text-sm md:w-auto md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg"
+              className="w-full overflow-hidden rounded-xl border-2 border-primary/50 bg-slate-800/50 px-3 py-2 text-xs font-semibold text-primary backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-primary hover:bg-slate-800/70 hover:shadow-xl hover:shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-2.5 sm:text-sm md:w-auto md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg"
               onClick={toggleOpen}
             >
-              <span className="relative z-10 flex items-center justify-center gap-1 sm:gap-2">
+              <span className="flex items-center justify-center gap-1 sm:gap-2">
                 <span>🎯</span>
-                <span className="hidden sm:inline">Entrar em Sala</span>
+                <span className="hidden sm:inline">Entrar na sala</span>
                 <span className="sm:hidden">Entrar</span>
               </span>
-              <div className="absolute inset-0 bg-primary/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </button>
           </div>
         </div>

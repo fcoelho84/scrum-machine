@@ -7,17 +7,23 @@ export class UserUpdateStategy extends Strategy {
     return this.updateUser(newData, state)
   }
 
-  private updateUser(data: UserUpdate['data'], state: Room) {
-    state.users = state.users.map((user) => {
-      if (user.id !== data.id) return user
+  private async updateUser(data: UserUpdate['data'], state: Room) {
+    if (data.state === 'voted' && data.point) {
+      this.getStorageInstance().saveVote(data.id, data.point)
+    }
 
+    state.users = this.updateCurrentUser(data, state)
+    return state
+  }
+
+  private updateCurrentUser(data: UserUpdate['data'], state: Room) {
+    return state.users.map((user) => {
+      if (user.id !== data.id) return user
       return {
         ...user,
         ...data,
       }
     })
-
-    return state
   }
 
   private async removeSpectatorVote(data: UserUpdate['data']) {

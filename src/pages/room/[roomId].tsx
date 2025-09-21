@@ -1,9 +1,10 @@
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-import SlotMachine from '~/components/SlotMachine'
+import SlotMachine from '~/pages/room/_Slot'
 import BackgroundPage from '~/components/BackgroundPage'
-import Options from '~/components/Options'
+import Options from '~/pages/room/_Options'
+import Toolbar from './_Toolbar'
 
 const Room = () => {
   const params = useParams()
@@ -32,6 +33,7 @@ const Room = () => {
   return (
     <BackgroundPage>
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center gap-4 p-4 sm:gap-6 sm:p-6">
+        <Toolbar />
         <SlotMachine />
         <Options />
       </div>

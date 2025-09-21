@@ -62,6 +62,7 @@ export default {
         spin: 'spin 1.5s ease-in-out forwards',
         rotate: 'rotate 16s infinite linear',
         'particle-float': 'particleFloat 8s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.3s ease-out forwards',
       },
       keyframes: {
         glowBounce: {
@@ -204,6 +205,16 @@ export default {
           '100%': {
             transform: 'translateY(0px) translateX(0px) scale(1)',
             opacity: '0.2',
+          },
+        },
+        fadeIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-10px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
           },
         },
       },

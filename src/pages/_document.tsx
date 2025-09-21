@@ -14,11 +14,9 @@ export default function Document() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <main className="z-10 min-h-screen">
-          <title>Scrum Machine</title>
-          <Main />
-          <NextScript />
-        </main>
+        <title>Scrum Machine</title>
+        <Main />
+        <NextScript />
       </body>
     </Html>
   )

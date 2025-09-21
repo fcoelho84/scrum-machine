@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 html {
   font-family: 'Bungee', sans-serif;
 }
@@ -12,4 +19,14 @@ html {
 
 button {
   @apply !text-xl;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    line-height: 1.1;
+  }
+
+  p {
+    line-height: 1.4;
+  }
 }

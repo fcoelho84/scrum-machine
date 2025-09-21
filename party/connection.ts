@@ -21,12 +21,11 @@ export class Connection {
 
     if (!name || !state) return
 
-    const existingUserById = state.users.find(
-      (user) => user.id === connection.id
-    )
-    if (existingUserById) return
+    const existingUserByName = state.users.find((user) => user.name === name)
+    if (existingUserByName) return
 
     const users = state?.users ?? []
+
     users.push({
       state: 'waiting',
       name,

@@ -11,6 +11,7 @@ const config = {
     'plugin:@typescript-eslint/stylistic-type-checked',
   ],
   rules: {
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/unbound-method': 'off',
     '@typescript-eslint/no-floating-promises': 'off',

@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import SlotMachine from '~/components/SlotMachine'
 import BackgroundPage from '~/components/BackgroundPage'
 import Options from '~/components/Options'
-import Controls from '~/components/Controls'
 
 const Room = () => {
   const params = useParams()
@@ -35,7 +34,6 @@ const Room = () => {
       <div className="relative z-10 flex min-h-screen w-full flex-col items-center justify-center gap-4 p-4 sm:gap-6 sm:p-6">
         <SlotMachine />
         <Options />
-        <Controls />
       </div>
     </BackgroundPage>
   )

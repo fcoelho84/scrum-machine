@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { create } from 'zustand'
 
@@ -16,10 +16,27 @@ export const useAudio = (audioPath: string) => {
   const context = useAudioContext()
   const audioRef = useRef(document.createElement('audio'))
 
+  const play = useCallback(() => {
+    audioRef.current.play()
+  }, [])
+
+  const pause = useCallback(() => {
+    audioRef.current.pause()
+  }, [])
+
+  const reset = useCallback(() => {
+    audioRef.current.pause()
+    audioRef.current.currentTime = 0
+  }, [])
+
   useEffect(() => {
     audioRef.current.src = audioPath
     audioRef.current.volume = context.volume
   }, [audioPath, context.volume])
 
-  return audioRef.current
+  return {
+    play,
+    pause,
+    reset,
+  }
 }

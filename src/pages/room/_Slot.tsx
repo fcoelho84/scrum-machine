@@ -2,7 +2,6 @@ import { type RoomUser, type Room, MessageTypes } from 'party/types'
 import { useAudio } from '~/hooks/useAudio'
 import { useCallback, useMemo } from 'react'
 import { useSocketMessage, useSocketSendMessage } from '~/hooks/useSocket'
-
 import { create } from 'zustand'
 import { FaPlay } from 'react-icons/fa'
 
@@ -23,87 +22,51 @@ const Slot = () => {
   const slot = useSocketMessage<Room['slot']>((state) => state?.slot)
   const users = useSocketMessage<Room['users']>((state) => state?.users)
 
-  const onAnimationStart = () => {
-    if (slot?.shouldSpin) {
-      sound.play()
-      return
-    }
-
-    sound.pause()
-    sound.currentTime = 0
+  const handleAnimationStart = () => {
+    if (slot?.shouldSpin) return sound.play()
+    sound.reset()
   }
 
-  const onLastChildAnimationEnd = (userId: string) => {
-    const lastUser = (users ?? []).pop()
+  const handleAnimationEnd = (userId: string) => () => {
+    sendMessage(MessageTypes.userUpdateBulk, { state: 'idle' })
+    const lastUser = users?.filter((u) => u.state !== 'spectator').pop()
+
     if (userId !== lastUser?.id) return
+
     context.setAnimationEnd(true)
-    sendMessage(MessageTypes.slotUpdate, {
-      shouldSpin: false,
-    })
+    sendMessage(MessageTypes.slotUpdate, { shouldSpin: false })
   }
 
-  const onAnimationEnd = (userId: string) => () => {
-    sendMessage(MessageTypes.userUpdateBulk, {
-      state: 'idle',
-    })
-    onLastChildAnimationEnd(userId)
-  }
-
-  const getValues = useCallback(
+  const getUserValues = useCallback(
     (user: RoomUser) => {
       const vote = user.point || '👀'
+      const isSpinning = slot?.shouldSpin
 
-      if (user?.state === 'voted' && !slot?.shouldSpin) {
-        return ['✔️']
-      }
-
-      if (user?.state === 'idle' && !slot?.shouldSpin) {
-        return [vote]
-      }
-
-      if (user?.state === 'waiting') {
-        return ['🤔']
-      }
-
-      if (slot?.shouldSpin) {
-        return [...(slot?.values ?? []), vote]
-      }
+      if (user.state === 'voted' && !isSpinning) return ['✔️']
+      if (user.state === 'idle' && !isSpinning) return [vote]
+      if (user.state === 'waiting') return ['🤔']
+      if (isSpinning) return [...(slot?.values ?? []), vote]
 
       return slot?.values ?? []
     },
     [slot?.shouldSpin, slot?.values]
   )
 
-  const shouldAnimte = useCallback(
-    (user: RoomUser, index: number) => {
-      if (user?.state !== 'idle') return false
-
-      const value = user.point ?? null
-      const neighborPrev = (users ?? [])[index - 1]?.point ?? null
-      const neighborNext = (users ?? [])[index + 1]?.point ?? null
-
-      const hasNeighborEqual = value === neighborPrev || value === neighborNext
-
-      return hasNeighborEqual && value !== null
-    },
-    [users]
-  )
-
-  const nonSpectators = useMemo(
+  const activeUsers = useMemo(
     () => users?.filter((user) => user.state !== 'spectator') ?? [],
     [users]
   )
 
-  return nonSpectators.map((user, index) => {
+  return activeUsers.map((user, index) => {
     return (
       <div
-        className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2 rounded-lg border border-solid border-primary"
+        className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2 rounded-lg border border-solid border-slate-600/50"
         key={index}
       >
         <div className="absolute z-10 flex min-w-full flex-row items-center max-lg:hidden">
-          <FaPlay className="absolute translate-x-[-6px] text-primary" />
-          <div className="h-[2px] w-full bg-primary blur-[1px]" />
-          <FaPlay className="absolute right-0 translate-x-[6px] rotate-180 text-primary" />
+          <FaPlay className="absolute translate-x-[-6px] text-slate-600/50" />
+          <div className="h-[2px] w-full bg-slate-600/50 blur-[1px]" />
+          <FaPlay className="absolute right-0 translate-x-[6px] rotate-180 text-slate-600/50" />
         </div>
         <div className="flex flex-col items-center" key={index}>
           <div className="relative top-0 max-h-[208px] max-w-[112px] overflow-hidden">
@@ -115,25 +78,22 @@ const Slot = () => {
             <div
               data-spin={slot?.shouldSpin}
               className="z-10 flex h-full w-full translate-x-0 flex-col items-center justify-center data-[spin=true]:animate-spin"
-              onAnimationEnd={onAnimationEnd(user.id)}
-              onAnimationStart={onAnimationStart}
+              onAnimationEnd={handleAnimationEnd(user.id)}
+              onAnimationStart={handleAnimationStart}
               style={{ animationDelay: index * 500 + 'ms' }}
             >
-              {getValues(user).map((item, key) => (
+              {getUserValues(user).map((item, key) => (
                 <div
                   key={key}
                   className="flex h-[208px] items-center justify-center"
                 >
-                  <span
-                    data-animate={shouldAnimte(user, index)}
-                    className="min-w-[112px] text-center text-[62px] font-semibold text-primary data-[animate=true]:animate-glow-bounce"
-                  >
+                  <span className="min-w-[112px] text-center text-[62px] font-semibold text-primary">
                     {item}
                   </span>
                 </div>
               ))}
             </div>
-            <label className="absolute bottom-0 w-full max-w-[112px] truncate text-center text-accent-content">
+            <label className="absolute bottom-0 w-full max-w-[112px] truncate text-center text-slate-300">
               {user.name}
             </label>
           </div>

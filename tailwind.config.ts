@@ -53,7 +53,6 @@ export default {
   theme: {
     extend: {
       animation: {
-        'glow-bounce': 'glowBounce 1s ease-in-out infinite',
         'scale-up': 'scaleUp 1s ease-in-out forwards',
         'scale-up-down': 'scaleUpDown 1s ease-in-out infinite',
         flicker: 'flicker 8s ease-in-out infinite alternate-reverse',
@@ -65,16 +64,6 @@ export default {
         'fade-in': 'fadeIn 0.3s ease-out forwards',
       },
       keyframes: {
-        glowBounce: {
-          '0%, 100%': {
-            transform: 'scaleY(0.9)',
-            textShadow: '0 0 80px theme("backgroundColor.primary")',
-          },
-          '50%': {
-            transform: 'scaleY(1)',
-            textShadow: '0 0 100px theme("backgroundColor.primary")',
-          },
-        },
         scaleUp: {
           '0%': {
             transform: 'scale(0)',

@@ -14,28 +14,37 @@ export const useAudioContext = create<State>((set) => ({
 
 export const useAudio = (audioPath: string) => {
   const context = useAudioContext()
-  const audioRef = useRef(document.createElement('audio'))
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const play = useCallback(() => {
-    audioRef.current.play()
+    audioRef.current?.play()
   }, [])
 
   const pause = useCallback(() => {
-    audioRef.current.pause()
+    audioRef.current?.pause()
   }, [])
 
   const reset = useCallback(() => {
-    audioRef.current.pause()
-    audioRef.current.currentTime = 0
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+    }
   }, [])
 
   const toggleLoop = useCallback((active: boolean) => {
-    audioRef.current.loop = active
+    if (audioRef.current) {
+      audioRef.current.loop = active
+    }
   }, [])
 
   useEffect(() => {
-    audioRef.current.src = audioPath
-    audioRef.current.volume = context.volume
+    if (typeof window !== 'undefined' && !audioRef.current) {
+      audioRef.current = document.createElement('audio')
+    }
+    if (audioRef.current) {
+      audioRef.current.src = audioPath
+      audioRef.current.volume = context.volume
+    }
   }, [audioPath, context.volume])
 
   return {

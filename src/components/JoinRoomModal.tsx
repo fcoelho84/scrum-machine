@@ -11,30 +11,6 @@ interface Modal {
   onClose?: () => void
 }
 
-const SlotMachineLogo = () => {
-  return (
-    <div className="relative">
-      <div className="relative h-8 w-6 rounded-lg border-2 border-primary/50 bg-gradient-to-b from-slate-800 to-slate-900 shadow-2xl sm:h-10 sm:w-8">
-        <div className="absolute inset-1 rounded bg-gradient-to-b from-slate-900 to-slate-800">
-          <div className="flex h-full flex-col justify-between p-0.5">
-            <div className="flex h-1.5 w-full items-center justify-center rounded bg-gradient-to-r from-primary to-accent sm:h-2">
-              <span className="text-xs font-bold text-white">🎯</span>
-            </div>
-            <div className="flex h-1.5 w-full items-center justify-center rounded bg-gradient-to-r from-accent to-primary sm:h-2">
-              <span className="text-xs font-bold text-white">🎲</span>
-            </div>
-            <div className="flex h-1.5 w-full items-center justify-center rounded bg-gradient-to-r from-primary to-accent sm:h-2">
-              <span className="text-xs font-bold text-white">💰</span>
-            </div>
-          </div>
-        </div>
-        <div className="absolute -right-0.5 top-1/2 h-3 w-1 -translate-y-1/2 rounded-r-full bg-gradient-to-r from-accent to-accent/70 shadow-lg sm:-right-1 sm:h-4 sm:w-1.5" />
-      </div>
-      <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary/20 to-accent/20 blur-sm" />
-    </div>
-  )
-}
-
 const JoinRoomModal = (props: PropsWithChildren<Modal>) => {
   const [name, setName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -130,7 +106,7 @@ const JoinRoomModal = (props: PropsWithChildren<Modal>) => {
             </div>
 
             {name.length > 0 && name.length < 3 && (
-              <div className="animate-fade-in mt-2">
+              <div className="mt-2 animate-fade-in">
                 <div className="flex items-center gap-1 text-xs text-amber-400">
                   <span>⚠️</span>
                   <span>Mínimo 3 caracteres</span>
@@ -138,7 +114,7 @@ const JoinRoomModal = (props: PropsWithChildren<Modal>) => {
               </div>
             )}
             {nameError && (
-              <div className="animate-fade-in mt-2">
+              <div className="mt-2 animate-fade-in">
                 <div className="flex items-center gap-1 text-xs text-red-400">
                   <span>❌</span>
                   <span>{nameError}</span>

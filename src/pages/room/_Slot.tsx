@@ -1,6 +1,6 @@
 import { type RoomUser, type Room, MessageTypes } from 'party/types'
 import { useAudio } from '~/hooks/useAudio'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useEffect, useState } from 'react'
 import { useSocketMessage, useSocketSendMessage } from '~/hooks/useSocket'
 import { create } from 'zustand'
 import { FaPlay } from 'react-icons/fa'
@@ -16,11 +16,16 @@ export const useSlotContext = create<State>((set) => ({
 }))
 
 const Slot = () => {
+  const [isClient, setIsClient] = useState(false)
   const sendMessage = useSocketSendMessage()
   const sound = useAudio('/spin.mp3')
   const context = useSlotContext()
   const slot = useSocketMessage<Room['slot']>((state) => state?.slot)
   const users = useSocketMessage<Room['users']>((state) => state?.users)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleAnimationStart = () => {
     if (slot?.shouldSpin) return sound.play()
@@ -56,6 +61,10 @@ const Slot = () => {
     () => users?.filter((user) => user.state !== 'spectator') ?? [],
     [users]
   )
+
+  if (!isClient) {
+    return null
+  }
 
   return activeUsers.map((user, index) => {
     return (

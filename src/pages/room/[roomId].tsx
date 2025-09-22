@@ -5,6 +5,7 @@ import SlotMachine from '~/pages/room/_Slot'
 import BackgroundPage from '~/components/BackgroundPage'
 import Options from '~/pages/room/_Options'
 import Toolbar from './_Toolbar'
+import Jackpot from './_Jackpot'
 
 const Room = () => {
   const params = useParams()
@@ -36,6 +37,7 @@ const Room = () => {
         <Toolbar />
         <SlotMachine />
         <Options />
+        <Jackpot />
       </div>
     </BackgroundPage>
   )

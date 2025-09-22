@@ -29,6 +29,10 @@ export const useAudio = (audioPath: string) => {
     audioRef.current.currentTime = 0
   }, [])
 
+  const toggleLoop = useCallback((active: boolean) => {
+    audioRef.current.loop = active
+  }, [])
+
   useEffect(() => {
     audioRef.current.src = audioPath
     audioRef.current.volume = context.volume
@@ -38,5 +42,6 @@ export const useAudio = (audioPath: string) => {
     play,
     pause,
     reset,
+    toggleLoop,
   }
 }

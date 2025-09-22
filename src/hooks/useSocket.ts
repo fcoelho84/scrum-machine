@@ -40,6 +40,7 @@ export const useInitSocket = () => {
       if (socket) return socket
 
       const connection = new PartySocket({
+        id: name.toLowerCase().trim(),
         query: {
           name,
         },

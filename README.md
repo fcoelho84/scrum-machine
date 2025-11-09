@@ -2,7 +2,7 @@
 
 > A real-time collaborative planning poker application for agile teams
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-scrummachine.fun-blue?style=for-the-badge)](https://scrummachine.fun/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-scrummachine.fun-blue?style=for-the-badge)](https://scrum-machine-fabianos-projects-9cde7ab1.vercel.app/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![PartyKit](https://img.shields.io/badge/PartyKit-Real--time-orange?style=for-the-badge)](https://docs.partykit.io/)

@@ -97,7 +97,7 @@ const Home: FC = () => {
           </p>
         </div>
 
-        <div className="mb-4 flex w-full max-w-md flex-col items-center gap-2 sm:mb-6 sm:max-w-lg sm:gap-3 md:mb-8 md:max-w-2xl md:flex-row md:gap-4 lg:mb-10">
+        <div className="mb-4 flex w-full max-w-md flex-col items-center justify-center gap-2 sm:mb-6 sm:max-w-lg sm:gap-3 md:mb-8 md:max-w-2xl md:flex-row md:gap-4 lg:mb-10">
           <button
             className="w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary to-accent px-3 py-2 text-xs font-semibold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:px-4 sm:py-2.5 sm:text-sm md:w-auto md:px-6 md:py-3 md:text-base lg:px-8 lg:py-4 lg:text-lg"
             onClick={toggleOpen}

@@ -66,18 +66,18 @@ const Slot = () => {
     return null
   }
 
-  return activeUsers.map((user, index) => {
-    return (
-      <div
-        className="relative m-auto flex max-w-fit flex-row flex-wrap items-center justify-center gap-2 rounded-lg border border-solid border-slate-600/50"
-        key={index}
-      >
-        <div className="absolute z-10 flex min-w-full flex-row items-center max-lg:hidden">
-          <FaPlay className="absolute translate-x-[-6px] text-slate-600/50" />
-          <div className="h-[2px] w-full bg-slate-600/50 blur-[1px]" />
-          <FaPlay className="absolute right-0 translate-x-[6px] rotate-180 text-slate-600/50" />
-        </div>
-        <div className="flex flex-col items-center" key={index}>
+  return (
+    <div className="relative m-auto grid max-w-fit grid-cols-2 gap-2 rounded-lg border border-solid border-slate-600/50 p-2 sm:grid-cols-4 lg:grid-cols-8">
+      {activeUsers.map((user, index) => (
+        <div
+          key={user.id}
+          className="relative flex flex-col items-center justify-center"
+        >
+          <div className="absolute z-10 flex min-w-full flex-row items-center max-lg:hidden">
+            <FaPlay className="absolute translate-x-[-6px] text-slate-600/50" />
+            <div className="h-[2px] w-full bg-slate-600/50 blur-[1px]" />
+            <FaPlay className="absolute right-0 translate-x-[6px] rotate-180 text-slate-600/50" />
+          </div>
           <div className="relative top-0 max-h-[208px] max-w-[112px] overflow-hidden">
             <img
               src={'/background-2.png'}
@@ -107,9 +107,9 @@ const Slot = () => {
             </label>
           </div>
         </div>
-      </div>
-    )
-  })
+      ))}
+    </div>
+  )
 }
 
 export default Slot

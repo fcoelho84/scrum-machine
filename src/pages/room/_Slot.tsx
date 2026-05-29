@@ -67,7 +67,7 @@ const Slot = () => {
   }
 
   return (
-    <div className="relative m-auto grid max-w-fit grid-cols-2 gap-2 rounded-lg border border-solid border-slate-600/50 p-2 sm:grid-cols-4 lg:grid-cols-8">
+    <div className="relative m-auto grid max-w-fit grid-cols-2 items-start gap-2 rounded-lg border border-solid border-slate-600/50 p-2 sm:grid-cols-4 lg:grid-cols-8">
       {activeUsers.map((user, index) => (
         <div
           key={user.id}
@@ -78,7 +78,7 @@ const Slot = () => {
             <div className="h-[2px] w-full bg-slate-600/50 blur-[1px]" />
             <FaPlay className="absolute right-0 translate-x-[6px] rotate-180 text-slate-600/50" />
           </div>
-          <div className="relative top-0 max-h-[208px] max-w-[112px] overflow-hidden">
+          <div className="relative top-0 h-[208px] w-[112px] overflow-hidden">
             <img
               src={'/background-2.png'}
               className="absolute aspect-[112/208]"
@@ -86,7 +86,7 @@ const Slot = () => {
             />
             <div
               data-spin={slot?.shouldSpin}
-              className="z-10 flex h-full w-full translate-x-0 flex-col items-center justify-center data-[spin=true]:animate-spin"
+              className="z-10 flex w-full flex-col items-center data-[spin=true]:animate-spin"
               onAnimationEnd={handleAnimationEnd(user.id)}
               onAnimationStart={handleAnimationStart}
               style={{ animationDelay: index * 500 + 'ms' }}
